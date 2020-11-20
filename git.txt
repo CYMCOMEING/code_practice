@@ -14,7 +14,7 @@ git status
 git rm file
 
 推送到远程库
-git push -u orgin master
+git push -u origin master
 第一次推送要加-u，之后不用加
 
 解决git status不能显示中文
@@ -23,8 +23,11 @@ git config --global core.quotepath false
 查看暂存区中有哪些文件
 git ls-files
 
+生成key
+ssh-keygen -t rsa -C "123456@qq.com"
 
-
+测试是否成功
+ssh -T git@github.com
 
 
 
