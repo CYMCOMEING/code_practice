@@ -10,6 +10,21 @@ git commit -m "提交说明"
 查看状态
 git status
 
+删除
+git rm file
+
 推送到远程库
 git push -u orgin master
 第一次推送要加-u，之后不用加
+
+解决git status不能显示中文
+git config --global core.quotepath false
+
+查看暂存区中有哪些文件
+git ls-files
+
+
+
+
+
+
