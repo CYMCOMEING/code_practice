@@ -1,0 +1,15 @@
+创建仓库
+git init
+
+添加文件
+git add filename
+
+提交
+git commit -m "提交说明"
+
+查看状态
+git status
+
+推送到远程库
+git push -u orgin master
+第一次推送要加-u，之后不用加
