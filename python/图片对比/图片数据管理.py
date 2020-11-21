@@ -82,7 +82,6 @@ class picSql():
 
 if __name__ == "__main__":
     ps = picSql()
-    """
     ps.add_pic("D:\\dddd.jpg")
     ps.add_pic("D:\\hhhh.jpg")
     ps.add_pic("D:\\yyyy.jpg")
@@ -98,8 +97,8 @@ if __name__ == "__main__":
     
     print(ps.search_all("path"), "\n")
     print(ps.search_all("path, hash"), "\n")
-    """
-    print(ps.search_one(path,"path, similar, hash"), "\n")
+    
+    print(ps.search_one("D:\\yyyy.jpg","path, similar, hash"), "\n")
     
     ps.close()
 
