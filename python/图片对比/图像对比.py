@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-# !/usr/bin/env python
-# @Time    : 2018/11/17 14:52
-# @Author  : xhh
-# @Desc    : 余弦相似度计算
-# @File    : difference_image_consin.py
-# @Software: PyCharm
+# 余弦相似度计算
 # pip install opencv-python
 from PIL import Image
 from numpy import average, dot, linalg
