@@ -227,22 +227,6 @@ def comp_hash(i1, i2):
 
 
 
-from PIL import Image
-import math
-import operator
-from functools import reduce
-
-def image_contrast(img1, img2):
-
-    image1 = Image.open(img1)
-    image2 = Image.open(img2)
-
-    h1 = image1.histogram()
-    h2 = image2.histogram()
-
-    result = math.sqrt(reduce(operator.add,  list(map(lambda a, b: (a-b)**2, h1, h2)))/len(h1))
-    return result
-
 if __name__ == '__main__':
  img1 = r'D:\python\a.png'
  img2 = r'D:\python\b.png'
@@ -250,4 +234,3 @@ if __name__ == '__main__':
  #comp_ssim(img1, img2)
  comp_similar(img1, img2)
  comp_hash(img1, img2)
- print(image_contrast(img1, img2))

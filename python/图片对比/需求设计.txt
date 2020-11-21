@@ -1,0 +1,43 @@
+表 PicData
+表头 id 文件路径path 搜图结果source cosin similar hash
+create table PicData (
+id int primary key, 
+path text not null,
+source text,
+cosin  text,
+similar  text,
+hash text);
+
+1. 添加新图片
+insert into PicData (path) values (?);
+
+2. 修改图片记录
+update PicData set (cosin,similar,hash) value (?,?,?) where path=?;
+
+3. 删除图片
+delete from PicData where path=?
+
+4. 查询所有内容
+select * from PicData
+
+5. 查询一张图片所有内容
+select * from  PicData where path=?
+
+6. 查询图片指定项的内容
+select source from  PicData where path=?
+
+
+
+
+额外知识
+
+列出所有在数据库中创建的表
+SELECT tbl_name FROM sqlite_master WHERE type = 'table';
+
+列出关于 COMPANY 表的完整信息
+SELECT sql FROM sqlite_master WHERE type = 'table' AND tbl_name = 'COMPANY';
+
+
+
+
+
