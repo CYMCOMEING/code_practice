@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>百度一下，你就知道</title>
+
+<style>
+.top_ul {
+margin: 0;
+padding: 0;
+top: 0;
+width: 100%;
+list-style-type: none;
+background-color: rgb(135,217,234);
+overflow: hidden;
+}
+
+.top_ul li {
+float: left;
+}
+
+.top_ul li a {
+display:block;
+color: black;
+text-decoration: none;
+padding: 14px 16px;
+}
+
+.top_ul li a:hover {
+background-color: rgb(0,162,232);
+}
+
+.thumbnail 
+{
+	float:left;
+	width:150px;
+	height:150px;
+	margin:1px;
+}
+
+.show-bigImg{
+  width: 1200/@rem;
+  height: auto;
+  margin: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+}
+.show-bigImg img{
+  max-width: 100%;
+  max-height: 800/@rem;
+}
+.mengceng{
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background-color: rgba(0,0,0,0.7);
+  display: none;
+}
+
+</style>
+</head>
+<body>
+
+<ul class="top_ul">
+  <li><a class="active" href="#home">主页</a></li>
+  <li><a href="#news">文章</a></li>
+  <li><a href="#contact">图片</a></li>
+  <li><a href="#about">关于</a></li>
+</ul>
+<!--点击查看大图模块-->
+
+<div id="pic">
+<img class="thumbnail" src="html.jpg" >
+<div class="mengceng"> <div class="show-bigImg"> <img  src="html.jpg" οnclick="closeImg(this)" /></div> </div> 
+</div>
+
+</body>
+</html>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+function showPic(picList){
+    var changeHtml = "";
+    for (i in picList){
+        changeHtml += "<img class=\"thumbnail\" src=\""+picList[i]+"\"  onClick=\"bigImg(this)\" >";
+    }
+    document.getElementById("pic").innerHTML = changeHtml;
+}
+
+function bigImg(obj) {
+    var image = new Image(); //创建一个image对象
+    var path = obj.src;
+    image.src=path;   //新创建的image添加src
+    var width = image.width;  // 获取原始图片的宽
+    var hight = image.height; // 获取原始图片高
+    $("#bigImg").attr('src',path); 
+    $(".show-bigImg").css({"margin-top":-hight/2,"margin-left":-width/2});// 居中；css中使用了fixed定位top：50%；left：50%；
+    $(".mengceng").css("display","block");
+    if (width>1200) {
+        $(".show-bigImg").css({"margin-left":-1200/2});
+    }
+    if (hight>800) {
+        $(".show-bigImg").css({"margin-top":-800/2});
+    }
+}
+
+// 点击放大图片关闭
+function closeImg(obj) {
+    $("#bigImg").attr('src',"");
+    $(".mengceng").css("display","none");
+}
+
+var picList = ["pic_1.jpg","pic_2.jpg","pic_3.jpg","pic_4.jpg","pic_5.jpg","pic_6.jpg","pic_7.jpg","pic_8.jpg",];
+showPic(picList)
+</script>
