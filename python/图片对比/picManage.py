@@ -27,6 +27,15 @@ class PicManager(picSql):
             return
         super().add_pic(path)
 
+    def add_comp(self, **kwargs):
+        id1 = kwargs["id1"]
+        id2 = kwargs["id2"]
+        if self.search_comp_ids(id1, id2, "*"):
+            print("id组合已经存在")
+            return
+        super().add_comp(**kwargs)
+        
+
 
 if __name__ == "__main__":
     pm = PicManager()
@@ -36,7 +45,8 @@ if __name__ == "__main__":
     print(pm.search_all("*"), "\n")
     pm.modify_pic("D:\\hhhh.jpg", ("cosin",), ("SDFAFHSJLDF",))
 
-    pm.modify_pic("D:\\yyyy.jpg", ("cosin", "similar", "hash"), ("SDFALNAGDS", "SFDREGTJYTJ", "LSDHGDKLGJU"))
+    pm.modify_pic("D:\\yyyy.jpg", ("cosin", "similar", "hash"),
+                  ("SDFALNAGDS", "SFDREGTJYTJ", "LSDHGDKLGJU"))
 
     print(pm.search_all("*"), "\n")
 
