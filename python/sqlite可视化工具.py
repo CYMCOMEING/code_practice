@@ -79,6 +79,6 @@ class TkSqlit3:
 
 if __name__ == "__main__":
   root = Tk()
-  root.geometry("%dx%d" %(800, 600))
+  root.geometry("%dx%d" %(400, 300))
   TkSqlit3(root)
   root.mainloop()

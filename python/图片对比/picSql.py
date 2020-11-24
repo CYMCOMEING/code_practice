@@ -1,12 +1,15 @@
 import sqlite3
 import os
 
+"""
+PicData
+id, path,source,cosin,similar,hash
+
+CompareData
+id1, id2, cosin, similar, hash
+"""
 
 class picSql():
-    """
-    建议单例模式
-    """
-
     def __init__(self):
         self.filename = "picSql.db"
         self.db = None
@@ -33,8 +36,10 @@ class picSql():
             self.c.execute(
                 "create table if not exists PicData (id int primary key, path text not null,source text,cosin  text,"
                 "similar  text,hash text);")
+            self.c.execute(
+                "create table if not exists CompareData (id1 int not null, id2 int not null, cosin text, similar text, hash text);")
         except Exception as e:
-            print("create PicData table fail." + str(e))
+            print("create table fail." + str(e))
 
     def add_pic(self, path):
         try:
