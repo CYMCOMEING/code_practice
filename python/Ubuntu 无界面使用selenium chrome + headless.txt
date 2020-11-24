@@ -1,0 +1,26 @@
+1. 安装 selenium : sudo pip install selenium
+
+2. 安装 chromdriver: 进入 淘宝镜像源 下载 chromdriver, 可以查看 notes.txt 文件，看chrome 和ChromDriver 两者相对应的兼容版本
+
+3. 下载chrome : 下载 chromedriver_linux64.zip 
+
+4. 将 chromdriver 文件放到线上服务器 /usr/bin/ 下 ，将google-chrome-stable_current_amd64.deb上传线上服务器
+
+5. 安装chrome，执行如下命令: 
+sudo dpkg -i google-chrome*.deb   
+sudo apt-get install -f
+google-chrome --version      # 查看版本
+
+6. 编写测试脚本
+from selenium import webdriver
+  
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox') # 这个配置很重要
+client = webdriver.Chrome(chrome_options=chrome_options, executable_path='/usr/bin/chromedriver')    # 如果没有把chromedriver加入到PATH中，就需要指明路径
+  
+client.get("https://www.baidu.com")
+print (client.page_source.encode('utf-8'))
+  
+client.quit()
