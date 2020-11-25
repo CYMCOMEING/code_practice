@@ -160,14 +160,23 @@ class picSql():
             return None
         return self.c.fetchall()
 
-    def del_comp(self, id1, id2):
+    def del_one_comp(self, id1, id2):
         try:
-            self.c.execute("delete from CompareData where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1);", {
-                           'id1': id1, 'id2': id2})
+            self.c.execute("delete from CompareData where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1);", {'id1': id1, 'id2': id2})
             count = self.db.total_changes
             self.db.commit()
         except Exception as e:
-            print("del_comp fail." + str(e))
+            print("del_one_comp fail." + str(e))
+            return False
+        return count > 0
+
+    def del_all_comp(self, id):
+        try:
+            self.c.execute("delete from CompareData where id1=:id or id2=:id;", {'id': id})
+            count = self.db.total_changes
+            self.db.commit()
+        except Exception as e:
+            print("del_all_comp fail." + str(e))
             return False
         return count > 0
 
@@ -210,6 +219,6 @@ if __name__ == "__main__":
     print(*ps.search_comp_ids(4, 3, "*"))
 
     ps.modify_comp(4, 3, similar="dfgs")
-    ps.del_comp(8, 6)
+    ps.del_one_comp(8, 6)
     print(*ps.search_comp_all('*'))
     ps.close()

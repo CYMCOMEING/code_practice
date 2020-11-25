@@ -1,18 +1,23 @@
 # 余弦相似度计算
 # pip install opencv-python
+from cv2 import cv2
 from PIL import Image
 from numpy import average, dot, linalg
- 
+
 # 对图片进行统一化处理
-def get_thum(image, size=(64,64), greyscale=False):
+
+
+def get_thum(image, size=(64, 64), greyscale=False):
     # 利用image对图像大小重新设置, Image.ANTIALIAS为高质量的
     image = image.resize(size, Image.ANTIALIAS)
     if greyscale:
         # 将图片转换为L模式，其为灰度图，其每个像素用8个bit表示
         image = image.convert('L')
     return image
- 
+
 # 计算图片的余弦距离
+
+
 def image_similarity_vectors_via_numpy(i1, i2):
     image1 = get_thum(i1)
     image2 = get_thum(i2)
@@ -32,13 +37,14 @@ def image_similarity_vectors_via_numpy(i1, i2):
     # dot返回的是点积，对二维数组（矩阵）进行计算
     res = dot(a / a_norm, b / b_norm)
     return res
- 
+
+
 def comp_cosin(img1, img2):
- image1 = Image.open(img1)
- image2 = Image.open(img2)
- cosin = image_similarity_vectors_via_numpy(image1, image2)
- print('图片余弦相似度',cosin)
- '把图片表示成一个向量，通过计算向量之间的余弦距离来表征两张图片的相似度'
+    image1 = Image.open(img1)
+    image2 = Image.open(img2)
+    cosin = image_similarity_vectors_via_numpy(image1, image2)
+    print('图片余弦相似度', cosin)
+    '把图片表示成一个向量，通过计算向量之间的余弦距离来表征两张图片的相似度'
 
 
 """
@@ -86,31 +92,37 @@ def comp_ssim(i1, i2):
 # @Desc    : 通过直方图计算图片的相似度
 # @File    : difference_image_hist.py
 # @Software: PyCharm
-from PIL import Image
- 
+
 # 将图片转化为RGB
+
+
 def make_regalur_image(img, size=(64, 64)):
     gray_image = img.resize(size).convert('RGB')
     return gray_image
- 
+
 # 计算直方图
+
+
 def hist_similar(lh, rh):
     assert len(lh) == len(rh)
-    hist = sum(1 - (0 if l == r else float(abs(l-r))/max(l,r))for l, r in zip(lh, rh))/len(lh)
+    hist = sum(1 - (0 if l == r else float(abs(l-r))/max(l, r))
+               for l, r in zip(lh, rh))/len(lh)
     return hist
- 
+
 # 计算相似度
+
+
 def calc_similar(li, ri):
     calc_sim = hist_similar(li.histogram(), ri.histogram())
     return calc_sim
+
 
 def comp_similar(img1, img2):
     image1 = Image.open(img1)
     image1 = make_regalur_image(image1)
     image2 = Image.open(img2)
     image2 = make_regalur_image(image2)
-    print("图片间的相似度为",calc_similar(image1, image2))
-
+    print("图片间的相似度为", calc_similar(image1, image2))
 
 
 """
@@ -138,12 +150,12 @@ dHash：差异值哈希。精确度较高，且速度也非常快
 # @Desc    : 图片的hash算法
 # @File    : image_3hash.py
 # @Software: PyCharm
-import cv2
- 
+
 # 均值哈希算法
+
 def ahash(image):
     # 将图片缩放为8*8的
-    image =  cv2.resize(image, (8,8), interpolation=cv2.INTER_CUBIC)
+    image = cv2.resize(image, (8, 8), interpolation=cv2.INTER_CUBIC)
     # 将图片转化为灰度图
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     # s为像素和初始灰度值，hash_str为哈希值初始值
@@ -156,10 +168,10 @@ def ahash(image):
     # 计算像素平均值
     avg = s/64
     # 灰度大于平均值为1相反为0，得到图片的平均哈希值，此时得到的hash值为64位的01字符串
-    ahash_str  = ''
+    ahash_str = ''
     for i in range(8):
         for j in range(8):
-            if gray[i,j]>avg:
+            if gray[i, j] > avg:
                 ahash_str = ahash_str + '1'
             else:
                 ahash_str = ahash_str + '0'
@@ -168,27 +180,31 @@ def ahash(image):
         result += ''.join('%x' % int(ahash_str[i: i + 4], 2))
     # print("ahash值：",result)
     return result
- 
+
 # 差异值哈希算法
+
+
 def dhash(image):
     # 将图片转化为8*8
-    image = cv2.resize(image,(9,8),interpolation=cv2.INTER_CUBIC )
+    image = cv2.resize(image, (9, 8), interpolation=cv2.INTER_CUBIC)
     # 将图片转化为灰度图
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     dhash_str = ''
     for i in range(8):
         for j in range(8):
-            if gray[i,j]>gray[i, j+1]:
+            if gray[i, j] > gray[i, j+1]:
                 dhash_str = dhash_str + '1'
             else:
                 dhash_str = dhash_str + '0'
     result = ''
     for i in range(0, 64, 4):
-        result += ''.join('%x'%int(dhash_str[i: i+4],2))
+        result += ''.join('%x' % int(dhash_str[i: i+4], 2))
     # print("dhash值",result)
     return result
- 
+
 # 计算两个哈希值之间的差异
+
+
 def campHash(hash1, hash2):
     n = 0
     # hash长度不同返回-1,此时不能比较
@@ -200,31 +216,31 @@ def campHash(hash1, hash2):
             n = n+1
     return n
 
-def comp_hash(i1, i2):
- img1 = i1
- img2 = i2
- img1 = cv2.imread(img1)
- img2 = cv2.imread(img2)
- 
- hash1 = ahash(img1)
- print('img1的ahash值',hash1)
- hash2= dhash(img1)
- print('img1的dhash值',hash2)
- hash3= ahash(img2)
- print('img2的ahash值',hash3)
- hash4= dhash(img2)
- print('img2的dhash值',hash4)
- camphash1 = campHash(hash1, hash3)
- camphash2= campHash(hash2, hash4)
- print("ahash均值哈希相似度：",camphash1)
- print("dhash差异哈希相似度：",camphash2)
 
+def comp_hash(i1, i2):
+    img1 = i1
+    img2 = i2
+    img1 = cv2.imread(img1)
+    img2 = cv2.imread(img2)
+
+    hash1 = ahash(img1)
+    print('img1的ahash值', hash1)
+    hash2 = dhash(img1)
+    print('img1的dhash值', hash2)
+    hash3 = ahash(img2)
+    print('img2的ahash值', hash3)
+    hash4 = dhash(img2)
+    print('img2的dhash值', hash4)
+    camphash1 = campHash(hash1, hash3)
+    camphash2 = campHash(hash2, hash4)
+    print("ahash均值哈希相似度：", camphash1)
+    print("dhash差异哈希相似度：", camphash2)
 
 
 if __name__ == '__main__':
- img1 = r'D:\python\a.png'
- img2 = r'D:\python\b.png'
- comp_cosin(img1, img2)
- #comp_ssim(img1, img2)
- comp_similar(img1, img2)
- comp_hash(img1, img2)
+    img1 = r'a.png'
+    img2 = r'b.png'
+    # comp_cosin(img1, img2)
+    # #comp_ssim(img1, img2)
+    # comp_similar(img1, img2)
+    comp_hash(img1, img2)
