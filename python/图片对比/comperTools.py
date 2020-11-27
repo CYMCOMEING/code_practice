@@ -1,7 +1,8 @@
 # pip install opencv-python
 from cv2 import cv2
 from PIL import Image
-from numpy import average, dot, linalg
+import os
+from numpy import average, dot, linalg, fromfile, uint8
 
 
 def get_thum(image, size=(64, 64), greyscale=False):
@@ -59,7 +60,9 @@ def comp_similar(img1, img2):
 
 # 均值哈希算法
 def ahash(img):
-    image = cv2.imread(img)
+    # image = cv2.imread(img)
+    image = cv_imread(img)
+    
     # 将图片缩放为8*8的
     image = cv2.resize(image, (8, 8), interpolation=cv2.INTER_CUBIC)
     # 将图片转化为灰度图
@@ -88,8 +91,11 @@ def ahash(img):
     return result
 
 # 差异值哈希算法
+
+
 def dhash(img):
-    image = cv2.imread(img)
+    # image = cv2.imread(img)
+    image = cv_imread(img)
     # 将图片转化为8*8
     image = cv2.resize(image, (9, 8), interpolation=cv2.INTER_CUBIC)
     # 将图片转化为灰度图
@@ -108,6 +114,8 @@ def dhash(img):
     return result
 
 # 计算两个哈希值之间的差异
+
+
 def campHash(hash1, hash2):
     n = 0
     # hash长度不同返回-1,此时不能比较
@@ -119,15 +127,36 @@ def campHash(hash1, hash2):
             n = n+1
     return n
 
+
 def comp_ahash(img1, img2):
     hash1 = ahash(img1)
     hash2 = ahash(img2)
     return campHash(hash1, hash2)
 
+
 def comp_dhash(img1, img2):
     hash1 = dhash(img1)
     hash2 = dhash(img2)
     return campHash(hash1, hash2)
+
+
+def cv_imread(file_path):
+    cv_img = cv2.imdecode(fromfile(file_path, dtype=uint8), cv2.IMREAD_UNCHANGED)
+    return cv_img
+
+    # file_path_gbk = file_path.encode('utf-8')        # unicode转gbk，字符串变为字节数组
+    # img_mat = cv2.imread(file_path_gbk.decode())  # 字节数组直接转字符串，不解码
+    # return img_mat
+
+    root_dir, file_name = os.path.split(file_path)
+    pwd = os.getcwd()
+    if root_dir:
+        os.chdir(root_dir)
+    cv_img = cv2.imread(file_name)
+    os.chdir(pwd)
+    return cv_img
+
+
 
 if __name__ == "__main__":
     # res = comp_cosin(r"a.jpg", r"a.png")

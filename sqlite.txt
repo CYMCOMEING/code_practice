@@ -1,0 +1,20 @@
+SQLite查询空值
+
+1、当插入数据位空时（如：Second= “”），数据中显示内容为（null）。如图所示。
+查询显示为空的列表：
+select * from  Test where Second is null
+查询显示不为空的列表：
+select * from  Test where Second not  null
+
+
+2、当插入数据的字段不存在时，数据库中显示为空。如图所示。
+查询显示为空的列表：
+select * from  Test where Second is ''
+查询显示不为空的列表：
+select * from  Test where Second <> ''
+
+
+避免重复插入数据
+insert or replace into table_name( id,type) values (1,0);
+insert or ignore into table_name (id,type) values (2,0);
+IF NOT EXISTS(SELECT * FROM table_name  WHERE ….) THEN INSERT INTO ... ELSE UPDATE SET ...
