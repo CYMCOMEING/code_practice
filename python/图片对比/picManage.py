@@ -47,28 +47,28 @@ class PicManager(picSql):
         self.execute(sql, param)
 
     def generate_hash(self, path):
-        if os.path.exists(path) and self.search("id", "path=?", [path,]):
+        if os.path.exists(path) and self.search("id", "path=?", [path, ]):
             ahash_data = ahash(path)
             dhash_data = dhash(path)
-            self.modify_pic("ahash=?,dhash=?", "path=?", [
-                            ahash_data, dhash_data, path])
+            self.modify_pic("ahash=?,dhash=?", "path=?", (
+                            ahash_data, dhash_data, path))
 
     def generater_all(self):
-        files = self.search("path", "ahash is '' or dhash is ''")
+        files = self.search("path", "ahash is null or dhash is null")
         for file in files:
-            if os.path.exists(file):
-                ahash_data = ahash(file)
-                dhash_data = dhash(file)
-                self.modify_pic("ahash=?,dhash=?", "path=?", [
-                    ahash_data, dhash_data, file])
+            if os.path.exists(file[0]):
+                ahash_data = ahash(file[0])
+                dhash_data = dhash(file[0])
+                self.modify_pic("ahash=?,dhash=?", "path=?", (
+                    ahash_data, dhash_data, file[0]))
 
     def comp_id(self, id1, id2):
         pic1 = self.query(
-            "select id,path,ahash,dhash from  PicData where id=?;", id1)
+            "select id,path,ahash,dhash from  PicData where id=? and ahash is not null and dhash is not null;", (id1,))
         pic2 = self.query(
-            "select id,path,ahash,dhash from  PicData where id=?;", id2)
+            "select id,path,ahash,dhash from  PicData where id=? and ahash is not null and dhash is not null;", (id2,))
         if (not pic1) and (not pic2):
-            print("id不在数据库 ")
+            print("id不存在数据库或hash没数据 ")
             return
         pic1 = pic1[0]
         pic2 = pic2[0]
@@ -78,26 +78,42 @@ class PicManager(picSql):
             self.generate_hash(pic2[1])
         comp_ahash = campHash(pic1[2], pic2[2])
         comp_dhash = campHash(pic1[3], pic2[3])
-        value = [id1, id2]
-        res = self.execute(
-            "select id1,id2 from  PicData where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1);", {"id1": id1, "id2":id2})
+
+        res = self.query(
+            "select id1,id2 from CompareData where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1);", {"id1": id1, "id2": id2})
         if res:
-            value = [res[0][0], res[0][1]]
-        value.append(comp_ahash)
-        value.append(comp_dhash)
-        self.execute(
-            "insert or replace into CompareData (id1,id2,ahash, dhash) values (?,?,?,?);", value)
-        
-    def copm_search(self, id1, id2=None):
-        value = [id1]
-        if id2 is None:
-            where = "id1=:id1 or id2=:id1"
+            # 已经存在
+            sql = "update CompareData set ahash=?, dhash=? where id1=? and id2=? ;"
+            value = [comp_ahash, comp_dhash, res[0][0], res[0][1]]
         else:
-            where = "(id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1)"
-            value.append(id2)
-        sql = "select id1,id2,ahash,dhash CompareData  PicData where {};".format(where)
+            # 不存在
+            sql = "insert into CompareData (id1,id2,ahash, dhash) values (?,?,?,?);"
+            value = [id1, id2, comp_ahash, comp_dhash]
+        self.execute(sql, tuple(value))
+
+    def copm_search(self, id1=None, id2=None):
+        if id1 is None:
+            value = None
+            where = ""
+        elif id2 is None:
+            value = {"id1": id1}
+            where = "where id1=:id1 or id2=:id1"
+        else:
+            where = "where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1)"
+            value["id2"] = id2
+        sql = "select id1,id2,ahash,dhash from CompareData {};".format(
+            where)
         return self.query(sql, value)
 
+    def show(self, data):
+        if not data:
+            return
+        print("\t".join(self.get_cursor_head()))
+        for item in data:
+            line = ""
+            for index in item:
+                line += str(index) + "\t"
+            print(line)
 
 def get_files(dir):
     files = []
@@ -105,17 +121,6 @@ def get_files(dir):
         if os.path.isfile(file):
             files.append(os.path.abspath(file))
     return files
-
-
-def show(data):
-    if not data:
-        return
-    for item in data:
-        line = ""
-        for index in item:
-            line += str(index) + "\t"
-        print(line)
-
 
 if __name__ == "__main__":
     # 添加图片，多张
@@ -125,10 +130,21 @@ if __name__ == "__main__":
     # 生成hash，批量
     # 对比某个图片
     # 对比记录排序
-    pm = PicManager()
-    pm.add_pics(get_files("*[.jpg .png]"))
-    show(pm.search('*'))
-    # show(pm.search("id,path", "ahash is '' and dhash is ''"))
-    # pm.del_pic("id=?", [1])
-    # pm.modify_pic("ahash=?,shash=?", "id=?", ["sdff", "sdff", "2"])
-    
+    pass
+    # pm = PicManager()
+    # pm.add_pics(get_files("*[.jpg .png]"))
+    # pm.show(pm.search('*'))
+    # pm.show(pm.search("id,path,ahash,dhash", "ahash is null or dhash is null"))
+    # pm.del_pic("id=?", (1,))
+    # pm.modify_pic("ahash=?,dhash=?", "id=?", ("sdff", "sdff", "2"))
+    # pm.show(pm.search('*'))
+
+    # pm.generate_hash(r"D:\git\code_practice\python\图片对比\a.jpg")
+    # pm.generater_all()
+    # pm.show(pm.search('*'))
+
+    # pm.comp_id(1, 2)
+    # pm.comp_id(1, 3)
+    # pm.comp_id(3, 2)
+    # pm.show(pm.search('*'))
+    # pm.show(pm.copm_search())

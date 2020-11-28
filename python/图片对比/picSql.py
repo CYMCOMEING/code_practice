@@ -35,117 +35,12 @@ class picSql():
         # 判断表头是否存在
         try:
             self.c.execute(
-                "create table if not exists PicData (id integer primary key autoincrement, path text not null,source text,cosin  text,"
+                "create table if not exists PicData (id integer primary key autoincrement, path text not null unique,source text,cosin  text,"
                 "similar  text, ahash text, dhash text);")
             self.c.execute(
                 "create table if not exists CompareData (id1 int not null, id2 int not null, cosin text, similar text, ahash text, dhash text);")
         except Exception as e:
             print("create table fail. " + str(e))
-
-    def modify_pic(self, where, **kwargs):
-        keys = ""
-        value = []
-        for key in kwargs:
-            keys += key + "=?,"
-            value.append(kwargs[key])
-        keys = keys[:-1]
-        value.append(where[1])
-        try:
-            # "update PicData set cosin=?,similar=?,hash=? where path=?;"
-            sql = "update PicData set {} where {}=?;".format(
-                keys, where[0])
-            self.c.execute(sql, value)
-            count = self.db.total_changes
-            self.db.commit()
-        except Exception as e:
-            print("modify_pic fail. \n" + sql + str(e))
-            return False
-        return count > 0
-
-    def add_comp(self, **kwargs):
-        keys = ""
-        values = []
-        for kye in kwargs:
-            keys += kye + ","
-            values.append(kwargs[kye])
-        keys = keys[:-1]
-        try:
-            sql = "insert into CompareData ({}) values ({});".format(
-                keys, ','.join(('?'*len(values))))
-            self.c.execute(sql, values)
-            count = self.db.total_changes
-            self.db.commit()
-        except Exception as e:
-            print("add_comp fail. " + str(e))
-            return False
-        return count > 0
-
-    def modify_comp(self, id1, id2, **kwargs):
-        keys = ''
-        value = []
-        for key in kwargs:
-            keys += key + "=?,"
-            value.append(kwargs[key])
-        keys = keys[:-1]
-        try:
-            sql = "update CompareData set " + keys + \
-                " where (id1=? and id2=?) or (id1=? and id2=?);"
-            self.c.execute(sql, value+[id1, id2, id2, id1])
-            count = self.db.total_changes
-            self.db.commit()
-        except Exception as e:
-            print("modify_comp fail. \n" + sql + str(e))
-            return False
-        return count > 0
-
-    def search_comp_id(self, id, key):
-        try:
-            self.c.execute("select " + key +
-                           " from  CompareData where id1=? or id2=?", [id, id])
-        except Exception as e:
-            print("search_comp_id fail. " + str(e))
-            return None
-        return self.c.fetchall()
-
-    def search_comp_ids(self, id1, id2, key):
-        try:
-            self.c.execute("select " + key +
-                           " from  CompareData where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1);", {'id1': id1, 'id2': id2})
-        except Exception as e:
-            print("search_comp_ids fail. " + str(e))
-            return None
-        return self.c.fetchall()
-
-    def search_comp_all(self, key):
-        try:
-            self.c.execute("select " + key +
-                           " from  CompareData ;")
-        except Exception as e:
-            print("search_comp_all fail. " + str(e))
-            return None
-        return self.c.fetchall()
-
-    def del_one_comp(self, id1, id2):
-        try:
-            self.c.execute("delete from CompareData where (id1=:id1 and id2=:id2) or (id1=:id2 and id2=:id1);", {
-                           'id1': id1, 'id2': id2})
-            count = self.db.total_changes
-            self.db.commit()
-        except Exception as e:
-            print("del_one_comp fail. " + str(e))
-            return False
-        return count > 0
-
-    def del_all_comp(self, id):
-        try:
-            self.c.execute(
-                "delete from CompareData where id1=:id or id2=:id;", {'id': id})
-            count = self.db.total_changes
-            self.db.commit()
-        except Exception as e:
-            print("del_all_comp fail. " + str(e))
-            return False
-        return count > 0
 
     def execute(self, sql, param=None):
         """
@@ -179,11 +74,18 @@ class picSql():
         param：参数,可为None
         retutn：成功返回True
         """
-        if param is None:
-            self.c.execute(sql)
-        else:
-            self.c.execute(sql, param)
+        try:
+            if param is None:
+               self.c.execute(sql)
+            else:
+                self.c.execute(sql, param)
+        except Exception as e:
+            print(e, sql)
+        
         return self.c.fetchall()
+
+    def get_cursor_head(self):
+        return [tuple[0] for tuple in self.c.description]
 
     # 支持with
     def __enter__(self):
