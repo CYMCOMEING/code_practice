@@ -1,5 +1,6 @@
 import socket  # 客户端 发送一个数据，再接收一个数据
 import threading
+import time
 
 
 def connect_proxy(addr):
@@ -10,23 +11,26 @@ def connect_proxy(addr):
     if data:
         print('recv:', data.decode())  # 输出我接收的信息
         th = create_server()
+        time.sleep(5)
         client.send(("请连接终点服务器".encode('utf-8')))
-    client.close()  # 关闭这个链接
+    print("服务器运行中")
     th.join()
+    client.close()
         
 
 
 def create_server():
-    # 建立一个服务端
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('', 10000))  # 绑定要监听的端口
-    server.listen(5)  # 开始监听 表示可以使用五个链接排队
+    server.bind(('', 10000))
+    server.listen(5)
     th = threading.Thread(target=sever_accept, args=(server,))
+    print("服务器绑定端口成功")
     th.start()
     return th
 
 
 def sever_accept(server):
+    print("服务器等待连接")
     while True:
         conn, addr = server.accept()
         print("连接地址：", addr)

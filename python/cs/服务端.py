@@ -17,8 +17,8 @@ while True:
     proxy_server = proxy.Proxy(('', 10000), addr)
     th = threading.Thread(target=proxy_server.serve_forever)
     th.start()
-    conn.close()
     th.join()
+    conn.close()
 
 
 

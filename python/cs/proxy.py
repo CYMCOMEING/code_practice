@@ -33,6 +33,7 @@ class Proxy:
                     if not data:
                         self.on_quit()
                     else:
+                        print("转发消息：{}".format(data.decode("utf-8")))
                         self.route[self.sock].send(data)
 
     def on_join(self):
