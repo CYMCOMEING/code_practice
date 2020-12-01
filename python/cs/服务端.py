@@ -14,7 +14,7 @@ while True:
         conn.close()
         break
     print('recive:',data.decode())
-    proxy_server = proxy.Proxy(('', 10000), addr)
+    proxy_server = proxy.Proxy(('', 10000), (addr[0], 10000))
     th = threading.Thread(target=proxy_server.serve_forever)
     th.start()
     th.join()

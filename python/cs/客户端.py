@@ -13,9 +13,9 @@ def connect_proxy(addr):
         th = create_server()
         time.sleep(5)
         client.send(("请连接终点服务器".encode('utf-8')))
+    client.close()
     print("服务器运行中")
     th.join()
-    client.close()
         
 
 
@@ -30,8 +30,8 @@ def create_server():
 
 
 def sever_accept(server):
-    print("服务器等待连接")
     while True:
+        print("服务器accepting...")
         conn, addr = server.accept()
         print("连接地址：", addr)
         while True:

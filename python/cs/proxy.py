@@ -20,11 +20,13 @@ class Proxy:
         self.inputs = [self.proxy]
         self.route = {}
         self.to_addr = (to_addr)  # 转发的地址
+        print("to_addr :", to_addr)
 
     def serve_forever(self):
         print('proxy listen...')
         while 1:
             readable, _, _ = select.select(self.inputs, [], [])
+            print("select")
             for self.sock in readable:
                 if self.sock == self.proxy:
                     self.on_join()
@@ -46,6 +48,7 @@ class Proxy:
         self.route[forward] = client
 
     def on_quit(self):
+        print("on_quit")
         for s in self.sock, self.route[self.sock]:
             self.inputs.remove(s)
             del self.route[s]
@@ -54,6 +57,6 @@ class Proxy:
 
 if __name__ == '__main__':
     try:
-        Proxy(('', 10000),('', 10001)).serve_forever()  # 代理服务器监听的地址
+        Proxy(('', 10000), ('', 10001)).serve_forever()  # 代理服务器监听的地址
     except KeyboardInterrupt:
         sys.exit(1)
