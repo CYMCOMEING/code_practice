@@ -42,10 +42,16 @@ class Proxy:
         client, addr = self.proxy.accept()
         print(addr, 'connect')
         forward = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print("to_addr ",self.to_addr)
         forward.connect(self.to_addr)
+        print("2")
         self.inputs += [client, forward]
+        print("3")
         self.route[client] = forward
+        print("4")
         self.route[forward] = client
+        print("5")
+        print("on_join ok")
 
     def on_quit(self):
         print("on_quit")

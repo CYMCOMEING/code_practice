@@ -17,7 +17,6 @@ while True:
     if not data:
         conn.close()
         break
-    print('recive:',data.decode())
     proxy_server = proxy.Proxy(bind_proxy, (addr[0], connect_prot))
     th = threading.Thread(target=proxy_server.serve_forever)
     th.start()
