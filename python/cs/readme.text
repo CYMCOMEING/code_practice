@@ -1,0 +1,10 @@
+
+放在最终处理数据的服务上
+readl_server.py
+
+代理服务器文件
+proxy.py
+server.py
+
+客户端，测试能否通过代理服务器连接到目标服务器
+testtcp.py
