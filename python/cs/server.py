@@ -1,87 +1,48 @@
-#!/usr/bin/env python
-from socket import *
-import time
-import sys
-import os
+import socket
+import threading
+import proxy
 
-HOST = 'localhost'
-PORT = 9500
-BUFIZ = 1024
-ADDR = (HOST, PORT)
+bind_ip = ('', 9999) # 本地绑定的普通服务器
+bind_proxy = ('', 10000) # 代理服务器
+connect_prot = 10000 # 真正服务器端口
 
-
-def recvfile(filename):
-    print('starting receive file...')
-    f = open(filename, 'wb')
-    cliSockfd.send(b'no problem')
-    while True:
-        data = cliSockfd.recv(4096)
-        if data.decode() == 'EOF':
-            print('recved file success!')
-            break
-        f.write(data)
-    f.close()
-
-
-def sendfile(filename):
-    print('starting send file...')
-    cliSockfd.send(b'no problem')
-    f = open(filename, 'rb')
-    while True:
-        data = f.read(4096)
-        if not data:
-            break
-        cliSockfd.send(data)
-    f.close()
-    time.sleep(1)
-    cliSockfd.send(b'EOF')
-    print('send file success!')
-
-
-def handle1(act, filename):
-    if act == 'put':
-        print('recving msg!')
-        recvfile(filename)
-    elif act == 'get':
-        print('sending msg! ' + filename)
-        sendfile(filename)
-    else:
-        print('error!')
-
-
-def handle2(act):
-    if act == 'ls':
-        path = sys.path[0]
-        every_file = os.listdir(path)
-        for filename in every_file:
-            cliSockfd.send(bytes(filename + ' ', encoding='utf-8'))
-        time.sleep(1)
-        cliSockfd.send(b'EOF')
-        print('all filename has send to client success!')
-    else:
-        print('command error')
-
-
-sockfd = socket(AF_INET, SOCK_STREAM)
-sockfd.bind(ADDR)
-sockfd.listen(5)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(bind_ip)
+server.listen(5)
 while True:
-    print('waiting for connection...')
-    cliSockfd, addr = sockfd.accept()
-    print('...connected from:', addr)
+    conn, addr = server.accept()
+    print("连接地址：", addr)
+    conn.send(("请创建终点服务器".encode('utf-8')))
+    data = conn.recv(1024)
+    if not data:
+        conn.close()
+        break
+    print('recive:',data.decode())
+    proxy_server = proxy.Proxy(bind_proxy, (addr[0], connect_prot))
+    th = threading.Thread(target=proxy_server.serve_forever)
+    th.start()
+    th.join()
+    conn.close()
 
-    while True:
-        bmsg = cliSockfd.recv(4096)
-        msg = bmsg.decode()
-        if msg == 'close':
-            print('client closed')
-            break
-        info = msg.split()
-        print("msg {}  info {}".format(msg, info))
-        if len(info) == 2:
-            handle1(*info)
-        elif len(info) == 1:
-            handle2(*info)
-        else:
-            print('command error!' + msg)
-            break
+
+
+# import socket
+# # 建立一个服务端
+# server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+# server.bind(('',6999)) #绑定要监听的端口
+# server.listen(5) #开始监听 表示可以使用五个链接排队
+# while True:# conn就是客户端链接过来而在服务端为期生成的一个链接实例
+#     conn,addr = server.accept() #等待链接,多个链接的时候就会出现问题,其实返回了两个值
+#     print("连接地址：",addr)
+#     conn.send(("当前地址：{}".format(addr)).encode('utf-8'))
+#     while True:
+#         try:
+#             data = conn.recv(1024)  #接收数据
+#             if not data: # 在客户断开后，客户端会发送null，但是python没有null，所以用''代替
+#                 break
+#             print('recive:',data.decode()) #打印接收到的数据
+#             conn.send(data.upper()) #然后再发送数据
+#         except ConnectionResetError as e:
+#             print('关闭了正在占线的链接！')
+#             break
+#     conn.close()

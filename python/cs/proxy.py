@@ -55,8 +55,8 @@ class Proxy:
             s.close()
 
 
-if __name__ == '__main__':
-    try:
-        Proxy(('', 10000), ('', 10001)).serve_forever()  # 代理服务器监听的地址
-    except KeyboardInterrupt:
-        sys.exit(1)
+# if __name__ == '__main__':
+#     try:
+#         Proxy(('', 10000), ('', 10001)).serve_forever()  # 代理服务器监听的地址
+#     except KeyboardInterrupt:
+#         sys.exit(1)

@@ -2,6 +2,8 @@ import socket  # 客户端 发送一个数据，再接收一个数据
 import threading
 import time
 
+proxy_server = ('42.192.83.30', 9999) # 连接远程普通服务器
+local_server = ('', 10000) # 本地的真正服务器
 
 def connect_proxy(addr):
     # 声明socket类型，同时生成链接对象
@@ -21,7 +23,7 @@ def connect_proxy(addr):
 
 def create_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('', 10000))
+    server.bind(local_server)
     server.listen(5)
     th = threading.Thread(target=sever_accept, args=(server,))
     print("服务器绑定端口成功")
@@ -48,4 +50,4 @@ def sever_accept(server):
 
 
 if __name__ == "__main__":
-    connect_proxy(('42.192.83.30', 9999))
+    connect_proxy(proxy_server)

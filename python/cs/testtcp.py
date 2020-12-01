@@ -1,6 +1,7 @@
 import socket
 import threading
 
+proxy_server = ('42.192.83.30', 10000) # 代理服务器ip
 
 def connect_proxy(addr):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,4 +14,4 @@ def connect_proxy(addr):
     client.close()
 
 if __name__ == "__main__":
-    connect_proxy(('42.192.83.30', 10000))
+    connect_proxy(proxy_server)
