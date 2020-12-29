@@ -1,6 +1,8 @@
 1. 安装 selenium : sudo pip install selenium
 
 2. 安装 chromdriver: 进入 淘宝镜像源 下载 chromdriver, 可以查看 notes.txt 文件，看chrome 和ChromDriver 两者相对应的兼容版本
+http://npm.taobao.org/mirrors/chromedriver/
+
 
 3. 下载chrome : 下载 chromedriver_linux64.zip 
 

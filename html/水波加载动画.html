@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(240, 228, 228);
+        }
+
+        /* 基本样式，这样大致上就是得到一个蓝色背景的圆，细节就不说了自己看看就行~ */
+        .quan {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid rgb(246, 247, 248);
+            box-shadow: 0 0 0 3px rgb(41, 134, 196);
+
+        }
+
+        .shui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(23, 106, 201);
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        /* 定义伪类，就是要旋转的有角度的盒子： */
+        .shui::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            border-radius: 40%;
+            background-color: rgb(240, 228, 228);
+            animation: shi 5s linear infinite;
+
+        }
+        /* 实现，把白色盒子偏移到能覆盖圆上半部分，然后让它一直转： */
+        @keyframes shi {
+            0% {
+                transform: translate(-50%, -65%) rotate(0deg);
+
+            }
+
+            100% {
+                transform: translate(-50%, -65%) rotate(360deg);
+
+            }
+        }
+        /* 同上，再来一个白色盒子，不过背景色要设置透明度别覆盖掉了上一个： */
+        .shui::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            border-radius: 42%;
+            background-color: rgb(240, 228, 228, 0.2);
+            animation: xu 7s linear infinite;
+
+        }
+
+        @keyframes xu {
+            0% {
+                transform: translate(-50%, -60%) rotate(0deg);
+
+            }
+
+            100% {
+                transform: translate(-50%, -60%) rotate(360deg);
+
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 定义两盒子，quan就是那个圆形，shui就是圆里蓝色的背景； -->
+    <div class="quan">
+        <div class="shui"></div>
+    </div>
+</body>
+
+</html>
