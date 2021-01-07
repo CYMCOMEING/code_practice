@@ -3,7 +3,7 @@ import os
 
 """
 PicData
-id, path,source,cosin,similar, ahash, dhash
+id, path,remake,cosin,similar, ahash, dhash
 
 CompareData
 id1, id2, cosin, similar, ahash, dhash
@@ -19,7 +19,6 @@ class picSql():
     def open(self):
         self.db = sqlite3.connect(self.filename)
         self.c = self.db.cursor()
-        self.create_table()
         return self
 
     def close(self):
@@ -31,14 +30,9 @@ class picSql():
         self.db = None
         self.c = None
 
-    def create_table(self):
-        # 判断表头是否存在
+    def create_table(self, sql):
         try:
-            self.c.execute(
-                "create table if not exists PicData (id integer primary key autoincrement, path text not null unique,source text,cosin  text,"
-                "similar  text, ahash text, dhash text);")
-            self.c.execute(
-                "create table if not exists CompareData (id1 int not null, id2 int not null, cosin text, similar text, ahash text, dhash text);")
+            self.c.execute(sql)
         except Exception as e:
             print("create table fail. " + str(e))
 
@@ -76,12 +70,12 @@ class picSql():
         """
         try:
             if param is None:
-               self.c.execute(sql)
+                self.c.execute(sql)
             else:
                 self.c.execute(sql, param)
         except Exception as e:
             print(e, sql)
-        
+
         return self.c.fetchall()
 
     def get_cursor_head(self):

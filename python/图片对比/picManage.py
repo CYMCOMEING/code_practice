@@ -19,6 +19,10 @@ class PicManager(picSql):
     def __init__(self):
         super().__init__()
         self.open()
+        self.create_table("create table if not exists PicData (id integer primary key autoincrement, path text not null unique,remake text,cosin  text,"
+                          "similar  text, ahash text, dhash text);")
+        self.create_table(
+            "create table if not exists CompareData (id1 int not null, id2 int not null, cosin text, similar text, ahash text, dhash text);")
 
     def __del__(self):
         self.close()
@@ -115,12 +119,14 @@ class PicManager(picSql):
                 line += str(index) + "\t"
             print(line)
 
+
 def get_files(dir):
     files = []
     for file in glob.glob(dir):
         if os.path.isfile(file):
             files.append(os.path.abspath(file))
     return files
+
 
 if __name__ == "__main__":
     # 添加图片，多张
