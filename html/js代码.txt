@@ -1,0 +1,27 @@
+//navigator对象详解
+       var appCodeName= window.navigator.appCodeName;//返回与浏览器相关的内部代码名  都为Mozilla
+       var appName=navigator.appName;//返回浏览器正式名称  均为Netscape
+       var appVersion=navigator.appVersion;//返回浏览器版本号
+       var cookieEnabled=navigator.cookieEnabled;//返回浏览器是否启用cookie，true和false
+       var geolocation=navigator.geolocation;//返回地理定位信息(h5)
+       var javaEnabled=navigator.javaEnabled();//检测当前浏览器是否支持 Java，从而知道浏览器是否能显示 Java 小程序(IE,chrome返回true，firefox返回false)
+       var language=navigator.language;//返回浏览器的首选语言
+       var mimeTypes= navigator.mimeTypes;//返回浏览器支持的Mime类型
+       var msManipulationViewsEnabled= navigator.msManipulationViewsEnabled;//仅支持IE，true
+       var msMaxTouchPoints=navigator.msMaxTouchPoints;//字面意思是最大的触摸点，IE为0，其他不支持
+       var msPointerEnabled=navigator.msPointerEnabled;//IE为true，其他不支持
+       var onLine=navigator.onLine;//是否连接互联网，均返回true(未断网)
+       var platform=navigator.platform;//所在平台，返回win32
+       var plugins=navigator.plugins;//返回浏览器插件集合
+       var preference=navigator.preference;//允许一个已标识的脚本获取并设置特定的 Navigator 参数
+       var product= navigator.product;//浏览器产品名，返回gecko
+       var systemLanguage=navigator.systemLanguage;//获取系统语言，IE支持，返回zh-cn
+       var userAgent=navigator.userAgent;//判断浏览器类型
+       var userLanguage=navigator.userLanguage;//返回操作系统的自然语言设置,IE支持，返回zh-cn
+       //方法
+       var msLaunchUri=navigator.msLaunchUri;//回调函数，未研究
+       var taintEnabled=navigator.taintEnabled;//回调函数
+       var hasOwnProperty=navigator.hasOwnProperty;//意思是是否支持属性，用法如下
+       var s=document.hasOwnProperty("ontouchstart");//电脑返回false，手机为true
+       
+       alert(s);
