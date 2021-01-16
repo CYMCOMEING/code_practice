@@ -45,15 +45,22 @@ def unzip(file, path=None, pwd=None):
 def getfiles(pathname):
     return glob.iglob(pathname + r'\*[.rar|.zip]')
 
+def un_file(file, opt_dir=None, pwd=None):
+    # 压缩文件
+    filetype = file.split('.')[-1]
+    if filetype == 'zip':
+        unzip(file, opt_dir, pwd)
+    if filetype == 'rar':
+        unrar(file, opt_dir, pwd)
+
+
 def un_all(pathname, pwd=None):
+    # 解压目录下所有压缩文件
     fi = getfiles(pathname)
     for file in fi:
         opt_dir = pathname + '/'+ os.path.basename(file).split('.')[0]
-        filetype = file.split('.')[-1]
-        if filetype == 'zip':
-            unzip(file, opt_dir, pwd)
-        if filetype == 'rar':
-            unrar(file, opt_dir, pwd)
+        un_file(file, opt_dir, pwd)
+        
 
 def create_zip(pathname, opt_zip):
     with zipfile.ZipFile(opt_zip, 'w') as zf:
@@ -84,5 +91,5 @@ def create_zip(pathname, opt_zip):
 
 
 #un_all(r'D:\python\test', '123')
-create_zip('D:\\html', 'D:\\html.zip')
+# create_zip('D:\\html', 'D:\\html.zip')
 
