@@ -1,0 +1,21 @@
+
+1. 定义一个业务类 Work，继承QObject
+2. Work类定义一个函数 work()，处理业务
+3. 定义一个槽 signal=pyqtSignal()，用于进度条或者处理完成提示（可选）
+4. 定义一个停止线程函数 stop()，退出线程死循环（可选）
+
+使用流程（主线程中）
+1. 实例化业务类 w=Work()
+2. 实例化线程类 t=QThread()
+3. 业务类加入线程 w.moveToThread(self.t)
+4. 绑定处理业务函数 self.t.started.connect(self.w.work)
+5. 连接业务类的信号 self.w.signal.connect(self.flush) （可选）
+6. 绑定线程退出后的函数 self.t.finished.connect(self.finished) （可选）
+7. 运行线程 self.t.start()
+8. 中途停止线程 self.w.stop() self.t.quit() （可选）（疑问：stop()是否可以去掉）
+
+
+其他
+1. 多个业务类可以 moveToThread() 到同一个 thread() 类，若线程正在执行，则放在事件队列里。执行完成后循环获取事件队列中的消息执行。
+2. 安全停止 self.t.quit() self.t.wait()
+3. 强制终止线程 self.t.terminate() self.t.wait() 要注意这样终止是不会处理锁的问题
