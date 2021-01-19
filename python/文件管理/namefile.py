@@ -1,7 +1,3 @@
-"""
-win10已经没有复移动文件时，遇到的同名可以自动重命名的功能
-"""
-
 import sys
 import os
 from shutil import copy2, move
