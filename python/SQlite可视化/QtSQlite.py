@@ -1,8 +1,8 @@
 import sys
 import sqlite3
-from PyQt5.QtCore import pyqtSignal, QObject, QThread,QModelIndex
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QAbstractItemView
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
+from PyQt5.QtCore import pyqtSignal, QObject, QThread, QModelIndex
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QAbstractItemView, QHeaderView
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from Ui_QtSQlite import Ui_MainWindow
 
@@ -18,6 +18,10 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
     def initUI(self):
         # 不能对表格进行修改（双击重命名等）
         self.table_lw.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # 水平方向标签拓展剩下的窗口部分，填满表格
+        self.data_tw.horizontalHeader().setStretchLastSection(True)
+        # 水平方向，表格大小拓展到适当的尺寸
+        self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.open_db_action.triggered.connect(self.open_db)
         self.table_lw.doubleClicked.connect(self.show_data)
 
@@ -25,41 +29,46 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         file = QFileDialog.getOpenFileName(
             self, "选择SQLite数据库", '.', "SQlite Files (*.db);;All Files (*)")
 
-        self.db.close()
-        self.db.open(file[0])
-        tables = self.db.query("select name from sqlite_master where type='table' order by name;")
-        self.table_lw.clear()
-        self.table_lw.addItems(tables[0])
+        if file:
+            self.db.close()
+            self.db.open(file[0])
+            tables = self.db.query(
+                "select name from sqlite_master where type='table' order by name;")
+            self.table_lw.clear()
+            self.table_lw.addItems(tables[0])
 
     def show_data(self, item):
-        # info = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
-        info = self.db.query('PRAGMA table_info({});'.format(item.data()))
+        # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
+        infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
         """
         cid name type notnull dflt_value pk
         """
         # 字段数
-        col = len(info)
-        data = self.db.query('select * from {};'.format(item.data()))
-        # print(data)
-        # 数据数量
-        row = len(data)
-        # print(col, row)
-        #设置数据层次结构，行列
-        self.model=QStandardItemModel(row,col)
-        #设置水平方向四个头标签文本内容
-        self.model.setHorizontalHeaderLabels(['标题1','标题2','标题3'])
-        for row in range(4):
-            for column in range(4):
-                item=QStandardItem('row %s,column %s'%(row,column))
-                #设置每个位置的文本值
-                self.model.setItem(row,column,item)
+        col = len(infos)
 
-        #实例化表格视图，设置模型为自定义的模型
+        # 表头
+        key_head = []
+        for info in infos:
+            key_head.append(info[1])
+        
+        # 获取表所有数据
+        table_data = self.db.query('select * from {};'.format(item.data()))
+        # 数据数量
+        row = len(table_data)
+
+        # 设置数据层次结构，行列
+        self.model = QStandardItemModel(row, col)
+
+        # 设置水平方向四个头标签文本内容
+        self.model.setHorizontalHeaderLabels(key_head)
+        for r in range(row):
+            for c in range(col):
+                item = QStandardItem(str(table_data[r][c]))
+                # 设置每个位置的文本值
+                self.model.setItem(r, c, item)
+
+        # 实例化表格视图，设置模型为自定义的模型
         self.data_tw.setModel(self.model)
-        #水平方向标签拓展剩下的窗口部分，填满表格
-        self.data_tw.horizontalHeader().setStretchLastSection(True)
-        #水平方向，表格大小拓展到适当的尺寸      
-        self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
 
 class SQLiteTool():
