@@ -6,20 +6,49 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>387</height>
+    <width>351</width>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SQlite可视化工具</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,7">
-    <item>
-     <widget class="QListWidget" name="table_lw"/>
-    </item>
-    <item>
-     <widget class="QTableView" name="data_tw"/>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="5,2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,7">
+        <item>
+         <widget class="QListWidget" name="table_lw"/>
+        </item>
+        <item>
+         <widget class="QTableView" name="data_tw"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>输入sql语句</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="sql_le"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="result_te"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -28,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>664</width>
+     <width>351</width>
      <height>23</height>
     </rect>
    </property>

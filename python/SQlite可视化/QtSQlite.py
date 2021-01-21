@@ -16,6 +16,9 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.initUI()
 
     def initUI(self):
+        """
+        ui控件初始化，绑定事件
+        """
         # 不能对表格进行修改（双击重命名等）
         self.table_lw.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # 水平方向标签拓展剩下的窗口部分，填满表格
@@ -24,8 +27,13 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.open_db_action.triggered.connect(self.open_db)
         self.table_lw.doubleClicked.connect(self.show_data)
+        # 回车事件
+        self.sql_le.returnPressed.connect(self.run_sql)
 
     def open_db(self):
+        """
+        打开数据库，在ui显示所有表名
+        """
         file = QFileDialog.getOpenFileName(
             self, "选择SQLite数据库", '.', "SQlite Files (*.db);;All Files (*)")
 
@@ -38,6 +46,9 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
             self.table_lw.addItems(tables[0])
 
     def show_data(self, item):
+        """
+        ui显示数据库数据
+        """
         # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
         infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
         """
@@ -70,15 +81,24 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         # 实例化表格视图，设置模型为自定义的模型
         self.data_tw.setModel(self.model)
 
+    def run_sql(self):
+        if self.db.isOpen:
+            sql = self.sql_le.text()
+            result_data = self.db.query(sql)
+            # self.result_te.setText(result_data)
+            print(result_data)
+
 
 class SQLiteTool():
     def __init__(self):
         self.db = None
         self.c = None
+        self.isOpen = False
 
     def open(self, file):
         self.db = sqlite3.connect(file)
         self.c = self.db.cursor()
+        self.isOpen = True
 
     def close(self):
         if self.c:
@@ -87,6 +107,7 @@ class SQLiteTool():
         if self.db:
             self.db.close()
             self.db = None
+            self.isOpen = False
 
     def execute(self, sql, param=None):
         """
