@@ -46,14 +46,11 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
             self.table_lw.addItems(tables[0])
 
     def show_data(self, item):
-        """
-        ui显示数据库数据
-        """
+        # 获取创建table的sql语句
         # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
+        
+        # 字段类型 cid name type notnull dflt_value pk
         infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
-        """
-        cid name type notnull dflt_value pk
-        """
         # 字段数
         col = len(infos)
 
