@@ -52,8 +52,12 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
         infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
         """
-        cid name type notnull dflt_value pk
+        ui显示数据库数据
         """
+        # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
+        
+        # 字段类型 cid name type notnull dflt_value pk
+        infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
         # 字段数
         col = len(infos)
 
