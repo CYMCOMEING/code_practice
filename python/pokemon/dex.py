@@ -198,6 +198,39 @@ def data_to_sql():
     """
     创建表头
     create 
+    num name_zh name_jp name_en img_url attr_1 attr_2 category 
+    ability_1 ability_2 hide_ability high weight catch_rate gender
+    egge_group egg_cycle base_points hp attack defense sattack sdefense
+    speed species_strength
+    """
+    csql = """
+    create table if not exists PokeData (
+        num integer primary key,
+        name_zh text,
+        name_jp text,
+        name_en text,
+        img_url text,
+        attr_1 text,
+        attr_2 text,
+        category text,
+        ability_1 text,
+        ability_2 text,
+        hide_ability text,
+        high int,
+        weight int,
+        catch_rate text,
+        gender text,
+        egge_group text,
+        egg_cycle text,
+        base_points text,
+        hp int,
+        attack int,
+        defense int,
+        sattack int,
+        sdefense int,4
+        speed int,
+        species_strength int,
+        );"
     """
     pass
 
