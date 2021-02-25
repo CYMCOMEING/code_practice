@@ -39,7 +39,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="sql_le"/>
+           <widget class="QLineEdit" name="sql_le">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -73,6 +77,11 @@
   <action name="open_db_action">
    <property name="text">
     <string>打开数据库</string>
+   </property>
+  </action>
+  <action name="SQLHelp_action">
+   <property name="text">
+    <string>SQL语法</string>
    </property>
   </action>
  </widget>

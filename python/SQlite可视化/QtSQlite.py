@@ -25,7 +25,9 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.data_tw.horizontalHeader().setStretchLastSection(True)
         # 水平方向，表格大小拓展到适当的尺寸
         self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # 打开菜单
         self.open_db_action.triggered.connect(self.open_db)
+        # 表名列表双击
         self.table_lw.doubleClicked.connect(self.show_data)
         # 回车事件
         self.sql_le.returnPressed.connect(self.run_sql)
@@ -55,7 +57,7 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         ui显示数据库数据
         """
         # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
-        
+
         # 字段类型 cid name type notnull dflt_value pk
         infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
         # 字段数
@@ -65,7 +67,7 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         key_head = []
         for info in infos:
             key_head.append(info[1])
-        
+
         # 获取表所有数据
         table_data = self.db.query('select * from {};'.format(item.data()))
         # 数据数量
@@ -86,12 +88,14 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.data_tw.setModel(self.model)
 
     def run_sql(self):
+        sql = self.sql_le.text()
+        if sql == 'help':
+            self.result_te.setText(sql_help)
+            return
         if self.db.isOpen:
-            sql = self.sql_le.text()
             result_data = self.db.query(sql)
             # self.result_te.setText(result_data)
             print(result_data)
-
 
 class SQLiteTool():
     def __init__(self):
@@ -151,6 +155,13 @@ class SQLiteTool():
             self.c.execute(sql, param)
         return self.c.fetchall()
 
+
+sql_help = """create table tablename (id int not null,name text not null,age int);
+
+insert into tablename (id,name,age) values (?,?,?);
+
+select * from tablename;
+"""
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
