@@ -40,6 +40,7 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.horizontalLayout_2.addWidget(self.label)
         self.sql_le = QtWidgets.QLineEdit(self.centralwidget)
+        self.sql_le.setText("")
         self.sql_le.setObjectName("sql_le")
         self.horizontalLayout_2.addWidget(self.sql_le)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
@@ -62,6 +63,8 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.open_db_action = QtWidgets.QAction(MainWindow)
         self.open_db_action.setObjectName("open_db_action")
+        self.SQLHelp_action = QtWidgets.QAction(MainWindow)
+        self.SQLHelp_action.setObjectName("SQLHelp_action")
         self.menu.addAction(self.open_db_action)
         self.menubar.addAction(self.menu.menuAction())
 
@@ -74,3 +77,4 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "输入sql语句"))
         self.menu.setTitle(_translate("MainWindow", "文件"))
         self.open_db_action.setText(_translate("MainWindow", "打开数据库"))
+        self.SQLHelp_action.setText(_translate("MainWindow", "SQL语法"))
