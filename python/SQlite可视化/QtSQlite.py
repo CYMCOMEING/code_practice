@@ -89,13 +89,18 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
 
     def run_sql(self):
         sql = self.sql_le.text()
+        result_data = ""
         if sql == 'help':
-            self.result_te.setText(sql_help)
-            return
-        if self.db.isOpen:
+            result_data = sql_help
+        elif self.db.isOpen:
             result_data = self.db.query(sql)
             # self.result_te.setText(result_data)
             print(result_data)
+        else:
+            return
+        self.sql_le.setText("")
+        self.result_te.setText(result_data)
+
 
 class SQLiteTool():
     def __init__(self):
