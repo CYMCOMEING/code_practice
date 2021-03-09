@@ -51,7 +51,6 @@ def allowed_file(filename):   # 验证上传的文件名是否符合要求，文
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    flash("upload")
     if request.method == 'POST':   # 如果是 POST 请求方式
         file = request.files['file']   # 获取上传的文件
         if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
@@ -71,6 +70,22 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
+
+
+@app.route('/yunpan/')
+@app.route('/yunpan/<path>')
+def yunpan_dir(path=None):
+    base_path = UPLOAD_FOLDER + '/'
+    if path:
+        # TODO 如果是文件夹显示文件夹内容
+        if path == '..':
+            # TODO 返回上一级目录
+            pass
+        elif os.path.exists(base_path):
+            # TODO 读取文件夹列表，在模板循环显示
+            # TODO 读到的文件都在模板创建下载连接
+            pass
+    return render_template("yunpan.html", curr_path=base_path)
 
 
 if __name__ == '__main__':
