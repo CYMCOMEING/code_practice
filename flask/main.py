@@ -1,7 +1,7 @@
 from config import *
 import os
 # 导入Flask类
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, flash
 # 获取上传文件的文件名
 from werkzeug.utils import secure_filename
 # 实例化，可视为固定格式
@@ -41,13 +41,17 @@ UPLOAD_FOLDER = r'./upload'   # 上传路径
 ALLOWED_EXTENSIONS = set(
     ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc'])   # 允许上传的文件类型
 
+
 def allowed_file(filename):   # 验证上传的文件名是否符合要求，文件名必须带点并且符合允许上传的文件类型要求，两者都满足则返回 true
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 # 参考 https://zhuanlan.zhihu.com/p/23731819
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    flash("upload")
     if request.method == 'POST':   # 如果是 POST 请求方式
         file = request.files['file']   # 获取上传的文件
         if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
@@ -55,7 +59,8 @@ def upload_file():
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
             file.save(os.path.join(UPLOAD_FOLDER, filename))   # 保存文件
-            return '{} upload successed!'.format(filename)   # 返回保存成功的信息
+            # return '{} upload successed!'.format(filename)   # 返回保存成功的信息
+            return redirect(url_for("upload_file"))  # 重定向到上传页面
     # 使用 GET 方式请求页面时或是上传文件失败时返回上传文件的表单页面
     return '''
     <!doctype html>
