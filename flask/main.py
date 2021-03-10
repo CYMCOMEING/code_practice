@@ -54,7 +54,7 @@ def upload_file():
     if request.method == 'POST':   # 如果是 POST 请求方式
         file = request.files['file']   # 获取上传的文件
         if file:
-        # if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
+            # if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
             filename = secure_filename(file.filename)   # 获取上传文件的文件名
             print(filename)
             if not os.path.exists(UPLOAD_FOLDER):
@@ -75,22 +75,30 @@ def upload_file():
 
 
 @app.route('/yunpan/')
-@app.route('/yunpan/<path>')
-def yunpan_dir(path=None):
-    base_path = UPLOAD_FOLDER + '/'
-    files = []
-    if path:
-        path = base_path + path + '/'
-    # TODO 如果是文件夹显示文件夹内容
-    if path == '..':
-        # TODO 返回上一级目录
-        pass
-    elif os.path.exists(base_path):
-        # TODO 文件夹要加斜杠
-        files = [f for f in os.listdir(base_path)]
-        # TODO 读到的文件都在模板创建下载连接-
-        pass
-    return render_template("yunpan.html", curr_path=base_path, files=files)
+@app.route('/yunpan/<path:client_path>')
+# @app.route('/yunpan/<path>/')
+def yunpan_dir(client_path=None):
+    server_path = UPLOAD_FOLDER + '/'
+    abspath = ''
+    fileslist = []
+
+    if not client_path:
+        client_path = ""
+    else:
+        print(client_path.split('/'))
+        abspath += '/'.join(client_path.split('/')[0:-2])
+        if abspath:
+            abspath += '/'
+        print(abspath)
+        # 获取服务器上的路径
+        server_path += client_path
+
+    if os.path.exists(server_path):
+        files = [f if os.path.isfile(server_path + f)
+                 else f + '/' for f in os.listdir(server_path)]
+        filespath = [client_path+f for f in files]
+        fileslist = zip(files, filespath)
+    return render_template("yunpan.html", curr_path=client_path, fileslist=fileslist, abspath=abspath)
 
 
 if __name__ == '__main__':
