@@ -9,8 +9,12 @@
 </head>
 
 <body>
-    
     <p>路径：{{ curr_path }}</p>
+    <ul>
+    {% for file in files %}
+        <li>{{ file }}</li>
+    {% endfor %}
+    </ul>
 </body>
 
 </html>

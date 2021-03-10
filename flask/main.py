@@ -53,8 +53,10 @@ def allowed_file(filename):   # 验证上传的文件名是否符合要求，文
 def upload_file():
     if request.method == 'POST':   # 如果是 POST 请求方式
         file = request.files['file']   # 获取上传的文件
-        if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
+        if file:
+        # if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
             filename = secure_filename(file.filename)   # 获取上传文件的文件名
+            print(filename)
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
             file.save(os.path.join(UPLOAD_FOLDER, filename))   # 保存文件
@@ -76,20 +78,23 @@ def upload_file():
 @app.route('/yunpan/<path>')
 def yunpan_dir(path=None):
     base_path = UPLOAD_FOLDER + '/'
+    files = []
     if path:
-        # TODO 如果是文件夹显示文件夹内容
-        if path == '..':
-            # TODO 返回上一级目录
-            pass
-        elif os.path.exists(base_path):
-            # TODO 读取文件夹列表，在模板循环显示
-            # TODO 读到的文件都在模板创建下载连接
-            pass
-    return render_template("yunpan.html", curr_path=base_path)
+        path = base_path + path + '/'
+    # TODO 如果是文件夹显示文件夹内容
+    if path == '..':
+        # TODO 返回上一级目录
+        pass
+    elif os.path.exists(base_path):
+        # TODO 文件夹要加斜杠
+        files = [f for f in os.listdir(base_path)]
+        # TODO 读到的文件都在模板创建下载连接-
+        pass
+    return render_template("yunpan.html", curr_path=base_path, files=files)
 
 
 if __name__ == '__main__':
-  # app.run(host, port, debug, options)
+    # app.run(host, port, debug, options)
     # 默认值：host="127.0.0.1", port=5000, debug=False
     app.run(host="0.0.0.0", port=5000)
     # print(get_dxdata())
