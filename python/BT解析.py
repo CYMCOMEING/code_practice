@@ -1,6 +1,8 @@
 
 #https://www.cnblogs.com/68xi/p/9294309.html
 #https://blog.csdn.net/sky04/article/details/5769517?utm_source=blogxgwz5
+#https://www.jianshu.com/p/f1659aba5aed
+
 
 #pip install py3-bencode
 import time
