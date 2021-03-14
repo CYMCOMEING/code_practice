@@ -22,6 +22,12 @@ class Parser(object):
     def getStruct(self):
         print(self.metainfo.keys())
 
+    def getAnnounce(self):
+        return str(self.metainfo[b'announce'], encoding = "utf-8")
+    
+    def getAnnounceList(self):
+        return self.metainfo[b'announce-list']
+
     # 如果是单文件就返回：0
     # 如果是多文件就返回:1
     def checkType(self):
@@ -85,7 +91,11 @@ class Parser(object):
 if __name__ == "__main__":
     parser = Parser('a.torrent')
 
-    print(parser.getStruct())
+    # print(parser.getStruct())
+    # print(parser.getAnnounce())
+    announceList = parser.getAnnounceList()
+    for al in announceList:
+        print(str(al[0], encoding = "utf-8"))
     # print(parser.getCreationDate())
     # print('creation date:'+time.strftime('%Y-%m-%d', time.localtime(parser.getCreationDate())))
     # print('comments:'+parser.getComments())
