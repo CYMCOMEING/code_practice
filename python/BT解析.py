@@ -59,6 +59,12 @@ class Parser(object):
     def getInfoFiles(self):
         return self.metainfo[b'info'][b'files']
 
+    def getPieceLength(self):
+        return self.metainfo[b'info'][b'piece length']
+
+    def getPieces(self):
+        return self.metainfo[b'info'][b'pieces']
+
     # 返回创建时间
     def getCreatedBy(self):
         if b'created by' in self.metainfo:
@@ -85,7 +91,7 @@ class Parser(object):
 if __name__ == "__main__":
     parser = Parser('a.torrent')
 
-    print(parser.getStruct())
+    # print(parser.getStruct())
     # print(parser.getCreationDate())
     # print('creation date:'+time.strftime('%Y-%m-%d', time.localtime(parser.getCreationDate())))
     # print('comments:'+parser.getComments())
@@ -93,6 +99,9 @@ if __name__ == "__main__":
     # print('encoding:'+parser.getEncoding())
     # print('created by:'+parser.getCreatedBy())
     # print(parser.getInfo())
+    # print(parser.getPieceLength())
+    with open('a.txt', 'w') as f:
+        f.write(parser.getPieces().hex())
     # print(parser.checkType())
     # for file in parser.getInfoFiles():
     #     print("length:"+ str(file[b'length']))
