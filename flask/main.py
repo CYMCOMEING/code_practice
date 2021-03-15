@@ -1,7 +1,7 @@
 from config import *
 import os
 # 导入Flask类
-from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import Flask, request, render_template, redirect, url_for, flash, send_file, make_response
 # 获取上传文件的文件名
 from werkzeug.utils import secure_filename
 # 实例化，可视为固定格式
@@ -37,7 +37,8 @@ def get_bvideo_pic():
     return render_template('./bvideo_pic.html', img_src=img_src)
 
 
-UPLOAD_FOLDER = r'./upload'   # 上传路径
+UPLOAD_FOLDER = os.getcwd() + r'/upload'   # 上传路径
+print(UPLOAD_FOLDER)
 ALLOWED_EXTENSIONS = set(
     ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc'])   # 允许上传的文件类型
 
@@ -47,6 +48,7 @@ def allowed_file(filename):   # 验证上传的文件名是否符合要求，文
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 # 参考 https://zhuanlan.zhihu.com/p/23731819
+# https://www.cnblogs.com/xiaxiaoxu/p/10549485.html
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -56,7 +58,6 @@ def upload_file():
         if file:
             # if file and allowed_file(file.filename):   # 如果文件存在并且符合要求则为 true
             filename = secure_filename(file.filename)   # 获取上传文件的文件名
-            print(filename)
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
             file.save(os.path.join(UPLOAD_FOLDER, filename))   # 保存文件
@@ -85,15 +86,20 @@ def yunpan_dir(client_path=None):
     if not client_path:
         client_path = ""
     else:
-        print(client_path.split('/'))
         abspath += '/'.join(client_path.split('/')[0:-2])
         if abspath:
             abspath += '/'
-        print(abspath)
         # 获取服务器上的路径
         server_path += client_path
 
     if os.path.exists(server_path):
+        if os.path.isfile(server_path):
+            # 下载文件
+            ROOT_FOLDER, filename = os.path.split(server_path)
+            print(ROOT_FOLDER, filename)
+
+            response = make_response(send_file(ROOT_FOLDER, attachment_filename=filename))
+            return response
         files = [f if os.path.isfile(server_path + f)
                  else f + '/' for f in os.listdir(server_path)]
         filespath = [client_path+f for f in files]
