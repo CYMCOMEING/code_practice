@@ -26,7 +26,9 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.data_tw.horizontalHeader().setStretchLastSection(True)
         # 水平方向，表格大小拓展到适当的尺寸
         self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # 打开菜单
         self.open_db_action.triggered.connect(self.open_db)
+        # 表名列表双击
         self.table_lw.doubleClicked.connect(self.show_data)
         # 回车事件
         self.sql_le.returnPressed.connect(self.run_sql)
@@ -47,18 +49,21 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
             self.table_lw.addItems(tables[0])
 
     def show_data(self, item):
-        """
-        ui显示数据库数据
-        """
-        # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
-        infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
-        """
-        ui显示数据库数据
-        """
+        # 获取创建table的sql语句
         # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
         
         # 字段类型 cid name type notnull dflt_value pk
         infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
+<<<<<<< HEAD
+=======
+        """
+        ui显示数据库数据
+        """
+        # infos = self.db.query("select sql from sqlite_master where tbl_name = '{}' and type='table';".format(item.data()))
+
+        # 字段类型 cid name type notnull dflt_value pk
+        infos = self.db.query('PRAGMA table_info({});'.format(item.data()))
+>>>>>>> cae12a633d65243b9661bf2447dd3974d59dc7af
         # 字段数
         col = len(infos)
 
@@ -66,7 +71,7 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         key_head = []
         for info in infos:
             key_head.append(info[1])
-        
+
         # 获取表所有数据
         table_data = self.db.query('select * from {};'.format(item.data()))
         # 数据数量
@@ -87,13 +92,89 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.data_tw.setModel(self.model)
 
     def run_sql(self):
-        if self.db.isOpen:
-            sql = self.sql_le.text()
+        sql = self.sql_le.text()
+        result_data = ""
+        if sql == 'help':
+            result_data = sql_help
+        elif self.db.isOpen:
             result_data = self.db.query(sql)
             # self.result_te.setText(result_data)
             print(result_data)
+        else:
+            return
+        self.sql_le.setText("")
+        self.result_te.setText(result_data)
 
 
+<<<<<<< HEAD
+=======
+class SQLiteTool():
+    def __init__(self):
+        self.db = None
+        self.c = None
+        self.isOpen = False
+
+    def open(self, file):
+        self.db = sqlite3.connect(file)
+        self.c = self.db.cursor()
+        self.isOpen = True
+
+    def close(self):
+        if self.c:
+            self.c.close()
+            self.c = None
+        if self.db:
+            self.db.close()
+            self.db = None
+            self.isOpen = False
+
+    def execute(self, sql, param=None):
+        """
+        执行数据库的增、删、改
+        sql：sql语句
+        param：数据，可以是list或tuple，亦可是None
+        retutn：成功返回True
+        """
+        try:
+            if param is None:
+                self.c.execute(sql)
+            else:
+                if type(param) is list:
+                    self.c.executemany(sql, param)
+                else:
+                    self.c.execute(sql, param)
+            count = self.db.total_changes
+            self.db.commit()
+        except Exception as e:
+            print(e)
+            return False, e
+        if count > 0:
+            return True
+        else:
+            return False
+
+    def query(self, sql, param=None):
+        """
+        查询语句
+        sql：sql语句
+        param：参数,可为None
+        retutn：成功返回True
+        """
+        if param is None:
+            self.c.execute(sql)
+        else:
+            self.c.execute(sql, param)
+        return self.c.fetchall()
+
+
+sql_help = """create table tablename (id int not null,name text not null,age int);
+
+insert into tablename (id,name,age) values (?,?,?);
+
+select * from tablename;
+"""
+
+>>>>>>> 5ad3de1da87c5a04be025fce8e7e3544da2dd6bc
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     q = QtSQlite()

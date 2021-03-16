@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>云盘</title>
+    <base href="http://localhost:5000/yunpan/" />  
+    <style>
+    </style>
+</head>
+
+<body>
+    <p>路径：/{{ curr_path }}</p>
+    <ul>
+        <li><a href='{{ abspath }}'>../</a></li>
+    {% for name,path in fileslist %}
+        <li><a href='{{ path }}'>{{ name }}</a></li>
+    {% endfor %}
+    </ul>
+</body>
+
+</html>
