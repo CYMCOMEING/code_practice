@@ -95,11 +95,9 @@ def yunpan_dir(client_path=None):
     if os.path.exists(server_path):
         if os.path.isfile(server_path):
             # 下载文件
-            ROOT_FOLDER, filename = os.path.split(server_path)
-            print(ROOT_FOLDER, filename)
+            filename = os.path.split(server_path)[1]
+            return make_response(send_file(server_path, attachment_filename=filename))
 
-            response = make_response(send_file(ROOT_FOLDER, attachment_filename=filename))
-            return response
         files = [f if os.path.isfile(server_path + f)
                  else f + '/' for f in os.listdir(server_path)]
         filespath = [client_path+f for f in files]
