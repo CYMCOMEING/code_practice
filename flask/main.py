@@ -3,7 +3,8 @@ import os
 # 导入Flask类
 from flask import Flask, request, render_template, redirect, url_for, flash, send_file, make_response
 # 获取上传文件的文件名
-from werkzeug.utils import secure_filename
+# from werkzeug.utils import secure_filename
+from utils import secure_filename
 # 实例化，可视为固定格式
 app = Flask(__name__)
 
@@ -49,7 +50,6 @@ def allowed_file(filename):   # 验证上传的文件名是否符合要求，文
 
 # 参考 https://zhuanlan.zhihu.com/p/23731819
 # https://www.cnblogs.com/xiaxiaoxu/p/10549485.html
-
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
