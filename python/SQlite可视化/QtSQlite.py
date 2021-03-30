@@ -24,8 +24,8 @@ class QtSQlite(QMainWindow, Ui_MainWindow):
         self.table_lw.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # 水平方向标签拓展剩下的窗口部分，填满表格
         self.data_tw.horizontalHeader().setStretchLastSection(True)
-        # 水平方向，表格大小拓展到适当的尺寸
-        self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # 水平方向，表格自适应大小
+        self.data_tw.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         # 打开菜单
         self.open_db_action.triggered.connect(self.open_db)
         # 表名列表双击

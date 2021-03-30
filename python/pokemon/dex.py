@@ -248,15 +248,16 @@ def data_to_sql():
             dicdata = json.loads(data)
             dicdata["ability_1"] = dicdata['ability'][0]
             if len(dicdata['ability']) > 1:
-                dicdata["ability_2"] = dicdata['ability'][0]
+                dicdata["ability_2"] = dicdata['ability'][1]
             else:
                 dicdata["ability_2"] = ""
             del dicdata['ability']
+            if 'hide_ability' not in dicdata.keys():
+                dicdata['hide_ability'] = ''
             dicdata['egge_group'] = ' '.join(dicdata['egge_group'])
             # print(getSqlInster('PokeData',dicdata))
             # print(dicToTuple(dicdata))
             db.execute(getSqlInster('PokeData',dicdata),dicToTuple(dicdata))
-            break # 测试一条先
 
     db.close()
 
