@@ -5,6 +5,11 @@
 # print(dict8.get('d',0))
 # print(dict8['d'])
 
+# 判断字典key是否存在
+# dic = {'a':1, "b":2,"c":3}
+# print("b" in dic.keys())
+# print("d" in dic.keys())
+
 # 获取列表中出现次数最多的元素
 # from collections import Counter
 # list9 = [1, 2, 3, 4, 2, 3, 2]
