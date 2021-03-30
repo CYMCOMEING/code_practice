@@ -194,6 +194,11 @@ def parse_detail_data(html):
 
     return json.dumps(data, ensure_ascii=False)
 
+import os
+os.chdir(os.path.split(os.path.realpath(__file__))[0])
+import sys
+sys.path.append("..")
+from simpleToolSql import *
 def data_to_sql():
     """
     创建表头
@@ -203,37 +208,57 @@ def data_to_sql():
     egge_group egg_cycle base_points hp attack defense sattack sdefense
     speed species_strength
     """
-    csql = """
-    create table if not exists PokeData (
-        num integer primary key,
-        name_zh text,
-        name_jp text,
-        name_en text,
-        img_url text,
-        attr_1 text,
-        attr_2 text,
-        category text,
-        ability_1 text,
-        ability_2 text,
-        hide_ability text,
-        high int,
-        weight int,
-        catch_rate text,
-        gender text,
-        egge_group text,
-        egg_cycle text,
-        base_points text,
-        hp int,
-        attack int,
-        defense int,
-        sattack int,
-        sdefense int,4
-        speed int,
-        species_strength int,
+    csql = "\
+    create table if not exists PokeData ( \
+        num integer primary key,\
+        name_zh text,\
+        name_jp text,\
+        name_en text,\
+        img_url text,\
+        attr_1 text,\
+        attr_2 text,\
+        category text,\
+        ability_1 text,\
+        ability_2 text,\
+        hide_ability text,\
+        high int,\
+        weight int,\
+        catch_rate text,\
+        gender text,\
+        egge_group text,\
+        egg_cycle text,\
+        base_points text,\
+        hp int,\
+        attack int,\
+        defense int,\
+        sattack int,\
+        sdefense int,\
+        speed int,\
+        species_strength int\
         );"
-    """
-    pass
 
+    db = simpleToolSql("PokeData")
+    # 创建表头
+    db.execute(csql)
+    with open('poke_data.txt', 'r', encoding='utf-8') as f:
+        while True:
+            data = f.readline()
+            if not data:
+                break
+            dicdata = json.loads(data)
+            dicdata["ability_1"] = dicdata['ability'][0]
+            if len(dicdata['ability']) > 1:
+                dicdata["ability_2"] = dicdata['ability'][0]
+            else:
+                dicdata["ability_2"] = ""
+            del dicdata['ability']
+            dicdata['egge_group'] = ' '.join(dicdata['egge_group'])
+            # print(getSqlInster('PokeData',dicdata))
+            # print(dicToTuple(dicdata))
+            db.execute(getSqlInster('PokeData',dicdata),dicToTuple(dicdata))
+            break # 测试一条先
+
+    db.close()
 
 if __name__ == "__main__":
     # 获取图鉴
@@ -262,18 +287,21 @@ if __name__ == "__main__":
     #         except Exception as e:
     #             print(name, e)
 
-    with open('poke_data.txt', 'a+', encoding='utf-8') as f1:
-        with open('dex_data.txt', 'r', encoding='utf-8') as f2:
-            while True:
-                name = f2.readline()
-                if not name:
-                    break
-                html = ''
-                name = name.strip()
-                print(name)
-                with open(name + '.html', 'r', encoding='utf-8') as f3:
-                    html = f3.read()
-                if html:
-                    data = parse_detail_data(html)
-                    f1.write(data+'\n')
-    
+    # 提取详情页数据
+    # with open('poke_data.txt', 'a+', encoding='utf-8') as f1:
+    #     with open('dex_data.txt', 'r', encoding='utf-8') as f2:
+    #         while True:
+    #             name = f2.readline()
+    #             if not name:
+    #                 break
+    #             html = ''
+    #             name = name.strip()
+    #             print(name)
+    #             with open(name + '.html', 'r', encoding='utf-8') as f3:
+    #                 html = f3.read()
+    #             if html:
+    #                 data = parse_detail_data(html)
+    #                 f1.write(data+'\n')
+
+    # 数据保存到数据库
+    data_to_sql()

@@ -1,5 +1,8 @@
+import sys
+import os
+os.chdir(os.path.split(os.path.realpath(__file__))[0])
+sys.path.append("..")
 from simpleToolSql import simpleToolSql
-
 
 class SDB():
     def __init__(self):
@@ -35,10 +38,10 @@ if __name__ == "__main__":
     os.chdir(os.path.split(os.path.realpath(__file__))[0])
     # print(os.getcwd())
     picdatas = [{'name': 'asda.jpg', 'search': 'sdfsfsf',
-               'search_pic': 's_asda.jpg'},
-               {'name': 'sfsaf.jpg', 'search': 'sdfsfsf',
-               'search_pic': 's_sfsaf.jpg'},
-               ]
+                 'search_pic': 's_asda.jpg'},
+                {'name': 'sfsaf.jpg', 'search': 'sdfsfsf',
+                 'search_pic': 's_sfsaf.jpg'},
+                ]
     db = SDB()
     print('======add======')
     db.add(picdatas[0])

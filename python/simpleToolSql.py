@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+
 class simpleToolSql():
     """
     simpleToolSql for sqlite3
@@ -8,7 +9,7 @@ class simpleToolSql():
     编写这个类主要是为了封装sqlite，继承此类复用方法
     """
 
-    def __init__(self,filename="stsql"):
+    def __init__(self, filename="stsql"):
         """
         初始化数据库，默认文件名 stsql.db
         filename：文件名
@@ -16,7 +17,7 @@ class simpleToolSql():
         self.filename = filename + ".db"
         self.db = sqlite3.connect(self.filename)
         self.c = self.db.cursor()
-        
+
     def close(self):
         """
         关闭数据库
@@ -24,7 +25,7 @@ class simpleToolSql():
         self.c.close()
         self.db.close()
 
-    def execute(self,sql,param=None):
+    def execute(self, sql, param=None):
         """
         执行数据库的增、删、改
         sql：sql语句
@@ -36,20 +37,20 @@ class simpleToolSql():
                 self.c.execute(sql)
             else:
                 if type(param) is list:
-                    self.c.executemany(sql,param)
-                else :
-                    self.c.execute(sql,param)
+                    self.c.executemany(sql, param)
+                else:
+                    self.c.execute(sql, param)
             count = self.db.total_changes
             self.db.commit()
         except Exception as e:
             print(e)
-            return False,e
-        if count > 0 :
+            return False, e
+        if count > 0:
             return True
-        else :
+        else:
             return False
 
-    def query(self,sql,param=None):
+    def query(self, sql, param=None):
         """
         查询语句
         sql：sql语句
@@ -59,28 +60,54 @@ class simpleToolSql():
         if param is None:
             self.c.execute(sql)
         else:
-            self.c.execute(sql,param)
+            self.c.execute(sql, param)
         return self.c.fetchall()
-        
-    # def set(self,table,field=" * ",where="",isWhere=False):
-    #     self.table = table
-    #     self.filed = field
-    #     if where != "" :
-    #         self.where = where
-    #         self.isWhere = True
-    #     return True
+
+
+def getSqlInster(table, dicdata):
+    """
+    根据字典数据生成sql
+    """
+    keystr = ''
+    for i in dicdata.keys():
+        keystr = keystr + i + ','
+
+    count = len(dicdata.keys())
+    valstr = ('?,' * count)[:-1]
+
+    if not keystr:
+        return ''
+
+    keystr = keystr[:-1]
+
+    return "insert into {} ({}) values ({});".format(table, keystr, valstr)
+
+def dicToTuple(dicdata):
+    vals = []
+    for i in dicdata.keys():
+        vals.append(dicdata[i])
+    
+    return tuple(vals)
+
 
 if __name__ == "__main__":
     """
     测试代码
     """
-    sql = simpleToolSql("test")
-    f = sql.execute("create table test (id int not null,name text not null,age int);")
-    print("ok", f)
-    sql.execute("insert into test (id,name,age) values (?,?,?);",[(1,'abc',15),(2,'bca',16)])
-    res = sql.query("select * from test;")
-    print(res)
-    sql.execute("insert into test (id,name) values (?,?);",(3,'bac'))
-    res = sql.query("select * from test where id=?;",(3,))
-    print(res)
-    sql.close()
+    # sql = simpleToolSql("test")
+    # f = sql.execute(
+    #     "create table test (id int not null,name text not null,age int);")
+    # print("ok", f)
+    # sql.execute("insert into test (id,name,age) values (?,?,?);",
+    #             [(1, 'abc', 15), (2, 'bca', 16)])
+    # res = sql.query("select * from test;")
+    # print(res)
+    # sql.execute("insert into test (id,name) values (?,?);", (3, 'bac'))
+    # res = sql.query("select * from test where id=?;", (3,))
+    # print(res)
+    # sql.close()
+
+    #######
+    data = {'name': 'asda.jpg', 'search': 'sdfsfsf', 'search_pic': 's_asda.jpg'}
+    print(getSqlInster('AA', data))
+    print(dicToTuple(data))

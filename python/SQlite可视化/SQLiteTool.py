@@ -1,3 +1,4 @@
+import sqlite3
 class SQLiteTool():
     def __init__(self):
         self.db = None
