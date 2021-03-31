@@ -98,13 +98,10 @@ if __name__ == "__main__":
     parser = Parser('a.torrent')
 
     # print(parser.getStruct())
-<<<<<<< HEAD
-=======
     # print(parser.getAnnounce())
     announceList = parser.getAnnounceList()
     for al in announceList:
         print(str(al[0], encoding = "utf-8"))
->>>>>>> 194a09d7c5d6906f686d6343eda5c1b7e887b294
     # print(parser.getCreationDate())
     # print('creation date:'+time.strftime('%Y-%m-%d', time.localtime(parser.getCreationDate())))
     # print('comments:'+parser.getComments())
