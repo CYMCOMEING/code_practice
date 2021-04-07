@@ -12,7 +12,8 @@ from selenium.webdriver.chrome.options import Options
 from MyTools import dei_blankline, get_dir_files
 from saucenao_ui import Ui_Form
 
-chrome_driver_path = "G:\\Project\\python\\picmanage\\chromedriver.exe"
+# chrome_driver_path = "G:\\Project\\python\\picmanage\\chromedriver.exe"
+chrome_driver_path = "D:\\git\\chromedriver.exe"
 
 
 class SauceNAO:
