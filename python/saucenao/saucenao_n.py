@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -34,15 +34,16 @@ def search_pic():
         input.send_keys(pic)
         # 点击搜索
         driver.find_element_by_xpath('//input[@id="searchButton"]').click()
-        # html = driver.page_source
-        # print(html)
+        html = driver.page_source
+        print(html)
+        # parse_result(html)
         # 获取搜索结果
-        divs = driver.find_elements_by_xpath('//div[@class="result"]')
-        result_list = []
-        for div in divs:
-            # print(div.find_element_by_xpath('//div[@class="resultimage"]/a').get_attribute('href'))
-            result_list.append(dei_blankline(div.text))
-            print(dei_blankline(div.text)+'\n')
+        # divs = driver.find_elements_by_xpath('//div[@class="result"]')
+        # result_list = []
+        # for div in divs:
+        #     # print(div.find_element_by_xpath('//div[@class="resultimage"]/a').get_attribute('href'))
+        #     result_list.append(dei_blankline(div.text))
+            
 
         # result_dic = {'source': pic, 'results': result_list}
         # print(result_dic)
@@ -53,6 +54,15 @@ def search_pic():
         if driver:
             driver.close()
         return result_json
+
+def parse_result(html):
+    soup = BeautifulSoup(html, features="lxml")
+    result_all = soup.find_all('div',{'class':'result'})
+    for res in result_all:
+        tds = res.find_all('td')
+        print(tds[0].img['src'])
+        print(tds[1].text)
+
 
 if __name__ == "__main__":
     print(search_pic())
