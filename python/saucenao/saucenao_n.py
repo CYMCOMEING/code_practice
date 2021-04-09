@@ -35,7 +35,9 @@ def search_pic():
         # 点击搜索
         driver.find_element_by_xpath('//input[@id="searchButton"]').click()
         html = driver.page_source
-        print(html)
+        # print(html)
+        with open('sauce.html', 'w', encoding="utf-8") as f:
+            f.write(html)
         # parse_result(html)
         # 获取搜索结果
         # divs = driver.find_elements_by_xpath('//div[@class="result"]')
@@ -60,9 +62,25 @@ def parse_result(html):
     result_all = soup.find_all('div',{'class':'result'})
     for res in result_all:
         tds = res.find_all('td')
-        print(tds[0].img['src'])
-        print(tds[1].text)
+        # print(tds[0].img['src'])
+        # print(tds[1].prettify())
+        # similarity = tds[1].find('div',class_="resultsimilarityinfo").text
+        # title = tds[1].find('div',class_="resulttitle").text
+        contentcolumn = tds[1].find('div',class_="resultcontentcolumn")
+        cc = ''
+        for child in contentcolumn.children:
+            print(child)
+            if child.name == 'br':
+                cc += '\n'
+            elif child.name:
+                cc += child.text
+        print(cc)
+        print('\n')
 
 
 if __name__ == "__main__":
-    print(search_pic())
+    # print(search_pic())
+    with open('sauce.html', 'r', encoding="utf-8") as f:
+        html = f.read()
+
+    parse_result(html)
