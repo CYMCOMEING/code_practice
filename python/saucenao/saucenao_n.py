@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup,element
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import base64
+from io import BytesIO
+from PIL import Image
 
 from MyTools import dei_blankline, get_dir_files
 
@@ -88,6 +91,22 @@ def download_img(res_list):
         r = requests.get(res_list['results'][i]['img'])
         with open('aaa_{}.jpg'.format(i), 'wb') as f:
             f.write(r.content)  
+        pic_str('aaa_{}.jpg'.format(i))
+        break
+
+def pic_str(pic_file):
+    img = Image.open(pic_file)
+    # Image转string
+    buffer = BytesIO()
+    img.save(buffer, 'PNG')
+    b = buffer.getvalue()
+    s = base64.b64encode(b).decode("utf-8")
+    print(s[0:-1])
+    # string转Image
+    b = base64.b64decode(s.encode("utf-8"))
+    buffer = BytesIO(b)
+    img = Image.open(buffer)
+    img.show()
 
 '''
 数据库表头格式
