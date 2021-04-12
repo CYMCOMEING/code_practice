@@ -6,3 +6,7 @@ source      results
 搜索结果json格式
 [{'img':'', 'data':'', 'content':''}]
 img是url，data是已经转成字符串的图片
+
+
+selenium报错
+[0412/094842.512:ERROR:ssl_client_socket_impl.cc(924)] handshake failed; returned -1, SSL error code 1, net_error -101

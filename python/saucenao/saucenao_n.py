@@ -12,7 +12,8 @@ from PIL import Image
 from MyTools import dei_blankline, get_dir_files
 from sdb import SDB
 
-chrome_driver_path = "D:\\git\\chromedriver.exe"
+chrome_driver_path = os.path.abspath("D:\\git\\chromedriver.exe")
+# System.setProperty("webdriver.chrome.driver", chrome_driver_path)
 PIC = os.path.abspath(".\\pic.jpg")
 
 
@@ -20,7 +21,9 @@ def init_chrome():
     # 初始化浏览器
     try:
         chrome_options = Options()
-        # chrome_options.add_argument('headless')
+        # 无头模式
+        chrome_options.add_argument('headless')
+
         driver = webdriver.Chrome(
             executable_path=chrome_driver_path, chrome_options=chrome_options)
     except Exception as e:
@@ -35,13 +38,9 @@ def init_chrome():
 
 # 搜索图片，爬取结果
 def search_pic(driver, pic):
-    if not driver:
-        return
-
-    driver.get('https://saucenao.com/')
-
     # 搜索单个图片
     try:
+        driver.get('https://saucenao.com/')
         # result_json = ''
         result_dic = {'source': pic, 'results': []}
         # 上传图片
@@ -111,6 +110,12 @@ def str2pic(str, file_name):
     img = Image.open(buffer)
     img.save(file_name)
 
+def dict2json(dict):
+    return json.dumps(dict, ensure_ascii=False)
+
+def json2dict(j):
+    return json.loads(j)
+
 def run():
     # 读取目录图片
     pic_list = [PIC]
@@ -122,17 +127,23 @@ def run():
     result_dic = search_pic(chrome, pic_list[0])
     # 下载搜图结果图片,并转成字符串保存
     download_img(result_dic)
+    # 将部分数据转字符串
+    result_dic['results'] = dict2json(result_dic['results'])
     # 写入数据库
     db.add(result_dic)
+    # 查看数据
+    print(db.read_all())
     
 
 if __name__ == "__main__":
     # print(search_pic())
-    with open('test.html', 'r', encoding='utf-8') as f:
-        html = f.read()
-    res_data = parse_result(html)
-    result_dic = {'source': "aaa.jpg", 'results': res_data}
+    # with open('test.html', 'r', encoding='utf-8') as f:
+    #     html = f.read()
+    # res_data = parse_result(html)
+    # result_dic = {'source': "aaa.jpg", 'results': res_data}
 
-    download_img(result_dic)
+    # download_img(result_dic)
     # result_json = json.dumps(result_dic, ensure_ascii=False)
     # print(result_json)
+
+    run()
