@@ -1,0 +1,8 @@
+
+数据库表头格式
+source      results
+源文件名    搜索结果(json字符串)
+
+搜索结果json格式
+[{'img':'', 'data':'', 'content':''}]
+img是url，data是已经转成字符串的图片

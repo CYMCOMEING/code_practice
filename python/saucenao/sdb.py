@@ -12,22 +12,21 @@ class SDB():
 
     def create_tabel(self):
         self.db.execute(
-            'create table if not exists PICS (id integer primary key,name text not null, search text, search_pic text);')
+            'create table if not exists PICS (id integer primary key,source text not null, results text);')
 
     def add(self, pic_data):
         if not self.read(pic_data):
-            data = (pic_data['name'], pic_data['search'],
-                    pic_data['search_pic'])
+            data = (pic_data['source'], pic_data['results'])
             self.db.execute(
-                "insert into PICS (name,search,search_pic) values (?,?,?);", data)
+                "insert into PICS (source,results) values (?,?);", data)
 
     def delet(self, pic_data):
-        where = "name='{}'".format(pic_data['name'])
+        where = "source='{}'".format(pic_data['source'])
         sql = "delete from PICS where {}".format(where)
         self.db.execute(sql)
 
     def read(self, pic_data):
-        return self.db.query("select * from PICS where name=?;", (pic_data['name'],))
+        return self.db.query("select * from PICS where source=?;", (pic_data['source'],))
 
     def read_all(self):
         return self.db.query("select * from PICS;")
@@ -37,10 +36,8 @@ if __name__ == "__main__":
     import os
     os.chdir(os.path.split(os.path.realpath(__file__))[0])
     # print(os.getcwd())
-    picdatas = [{'name': 'asda.jpg', 'search': 'sdfsfsf',
-                 'search_pic': 's_asda.jpg'},
-                {'name': 'sfsaf.jpg', 'search': 'sdfsfsf',
-                 'search_pic': 's_sfsaf.jpg'},
+    picdatas = [{'source': 'asda.jpg', 'results': 'sdfsfsf'},
+                {'source': 'sfsaf.jpg', 'results': 'sdfsfsf'},
                 ]
     db = SDB()
     print('======add======')
