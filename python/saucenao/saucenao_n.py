@@ -104,11 +104,10 @@ def pic2str(buf):
     return base64.b64encode(b).decode("utf-8")
 
 # 字符串转图片
-def str2pic(str, file_name):
+def str2pic(str):
     b = base64.b64decode(str.encode("utf-8"))
     buffer = BytesIO(b)
-    img = Image.open(buffer)
-    img.save(file_name)
+    return buffer
 
 def dict2json(dict):
     return json.dumps(dict, ensure_ascii=False)
@@ -133,7 +132,17 @@ def run():
     db.add(result_dic)
     # 查看数据
     print(db.read_all())
-    
+
+def read():
+    # 打开数据库
+    db = SDB()
+    data_str = db.read_all()
+    # print(data_str[0][1])
+    dict = json2dict(data_str[0][1])
+    print(dict[0]['img'])
+    f = str2pic(dict[0]['data'])
+    img = Image.open(f)
+    img.show()
 
 if __name__ == "__main__":
     # print(search_pic())
@@ -146,4 +155,5 @@ if __name__ == "__main__":
     # result_json = json.dumps(result_dic, ensure_ascii=False)
     # print(result_json)
 
-    run()
+    # run()
+    read()

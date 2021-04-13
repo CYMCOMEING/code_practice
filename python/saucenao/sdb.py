@@ -12,7 +12,7 @@ class SDB():
 
     def create_tabel(self):
         self.db.execute(
-            'create table if not exists PICS (id integer primary key,source text not null, results text);')
+            'create table if not exists PICS (source text primary key, results text);')
 
     def add(self, pic_data):
         if not self.read(pic_data):
