@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 import base64
 from io import BytesIO
 from PIL import Image
+from glob import glob
 
 from MyTools import dei_blankline, get_dir_files
 from sdb import SDB
@@ -117,11 +118,19 @@ def json2dict(j):
 
 def url_split(url_str):
     return url_str.split('/')[-1].split('?')[0]
-    
+
+# 读取文件夹下所有文件
+def read_pics(dir):
+    files = []
+    for f in glob(os.path.abspath(dir) + '/*'):
+        if os.path.isfile(f.strip()):
+            files.append(os.path.basename(f.strip()))
+    return files
 
 def run():
     # 读取目录图片
-    pic_list = [PIC]
+    # pic_list = read_pics('.')
+    pic_list = [os.path.basename(PIC)]
     # 打开数据库
     db = SDB()
     # 初始化浏览器
@@ -214,4 +223,5 @@ if __name__ == "__main__":
     # run()
     # read()
 
+    # print(read_pics('.'))
     run_ui()
