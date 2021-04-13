@@ -87,7 +87,7 @@ def parse_result(html):
                 columnstr += '\n'
             elif child.string:
                 columnstr += child.string
-        res_list.append({'img': img_url, 'data': '', 'content': columnstr})
+        res_list.append({'name': url_split(img_url), 'img': img_url, 'data': '', 'content': columnstr})
     return res_list
 
 # 下载搜索的对比图
@@ -115,6 +115,10 @@ def dict2json(dict):
 def json2dict(j):
     return json.loads(j)
 
+def url_split(url_str):
+    return url_str.split('/')[-1].split('?')[0]
+    
+
 def run():
     # 读取目录图片
     pic_list = [PIC]
@@ -139,10 +143,39 @@ def read():
     data_str = db.read_all()
     # print(data_str[0][1])
     dict = json2dict(data_str[0][1])
-    print(dict[0]['img'])
-    f = str2pic(dict[0]['data'])
-    img = Image.open(f)
-    img.show()
+    for i in dict:
+        print(i['img'])
+        f = str2pic(i['data'])
+        # img = Image.open(f)
+        # img.show()
+
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtCore import QModelIndex
+from PyQt5.QtWidgets import QMainWindow, QApplication, QListWidgetItem, QFileDialog, QWidget
+from saucenao_n_ui import Ui_MainWindow
+
+class SauceNAO_N_Ui(QMainWindow, Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(SauceNAO_N_Ui, self).__init__(parent)
+        self.setupUi(self)
+
+        self.pic_listWidget.doubleClicked.connect(self.read_data)
+
+        self.db = SDB()
+
+        self.index_list = self.db.read_index()
+
+        for i in self.index_list:
+            self.pic_listWidget.addItem(QListWidgetItem(i[0]))
+    
+    def read_data(self):
+        pass
+
+def run_ui():
+    app = QApplication(sys.argv)
+    w = SauceNAO_N_Ui()
+    w.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     # print(search_pic())
@@ -156,4 +189,6 @@ if __name__ == "__main__":
     # print(result_json)
 
     # run()
-    read()
+    # read()
+
+    run_ui()

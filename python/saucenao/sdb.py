@@ -31,6 +31,9 @@ class SDB():
     def read_all(self):
         return self.db.query("select * from PICS;")
 
+    def read_index(self):
+        return self.db.query("select source from PICS;")
+
 
 if __name__ == "__main__":
     import os

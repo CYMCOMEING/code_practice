@@ -4,8 +4,8 @@ source      results
 源文件名    搜索结果(json字符串)
 
 搜索结果json格式
-[{'img':'', 'data':'', 'content':''}]
-img是url，data是已经转成字符串的图片
+[{'name':'', 'img':'', 'data':'', 'content':''}]
+name是在url提取的文件名，img是url，data是已经转成字符串的图片
 
 
 selenium报错
