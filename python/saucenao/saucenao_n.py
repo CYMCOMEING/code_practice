@@ -150,8 +150,12 @@ def read():
         # img.show()
 
 from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import QMainWindow, QApplication, QListWidgetItem, QFileDialog, QWidget
+
+from PIL import Image, ImageQt
+
 from saucenao_n_ui import Ui_MainWindow
 
 class SauceNAO_N_Ui(QMainWindow, Ui_MainWindow):
@@ -160,16 +164,35 @@ class SauceNAO_N_Ui(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.pic_listWidget.doubleClicked.connect(self.read_data)
+        self.result_listWidget.clicked.connect(self.show_data)
 
         self.db = SDB()
 
+        self.res_list = []
         self.index_list = self.db.read_index()
 
         for i in self.index_list:
             self.pic_listWidget.addItem(QListWidgetItem(i[0]))
     
-    def read_data(self):
-        pass
+    def read_data(self, index):
+        # QModelIndex()
+        # print(index.data())
+        res = self.db.read({'source': index.data()})
+        # 第一个结果第二列
+        self.res_list = json2dict(res[0][1])
+        for res in self.res_list:
+            self.result_listWidget.addItem(QListWidgetItem(res['name']))
+
+    def show_data(self, index):
+        for res in self.res_list:
+            if res['name'] == index.data():
+                self.pic_textEdit.setText(res['content'])
+                f = str2pic(res['data'])
+                img = ImageQt.ImageQt(Image.open(f))
+                pix = QPixmap().fromImage(img)
+                self.pic_label.setPixmap(pix)
+                break
+        
 
 def run_ui():
     app = QApplication(sys.argv)
